@@ -2,30 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go/ast"
-	"go/parser"
-	"go/token"
-	"reflect"
 )
-
-// parseFile parses a Go source file and returns its AST.
-func parseFile(filename string) (*token.FileSet, *ast.File, error) {
-	fset := token.NewFileSet()
-	node, err := parser.ParseFile(fset, filename, nil, parser.AllErrors)
-	if err != nil {
-		return nil, nil, err
-	}
-	return fset, node, nil
-}
-
-// compareASTs compares two AST nodes and prints the differences.
-func compareASTs(node1, node2 interface{}) {
-	if !reflect.DeepEqual(node1, node2) {
-		fmt.Println("ASTs are different")
-	} else {
-		fmt.Println("ASTs are identical")
-	}
-}
 
 func main() {
 
@@ -44,5 +21,12 @@ func main() {
 		return
 	}
 
-	compareASTs(node1, node2)
+	structs1, funcs1 := extractStructsAndFuncs(node1)
+	structs2, funcs2 := extractStructsAndFuncs(node2)
+
+	fmt.Println("Comparing Structs:")
+	compareStructs(structs1, structs2)
+
+	fmt.Println("Comparing Functions:")
+	compareFuncs(funcs1, funcs2)
 }
