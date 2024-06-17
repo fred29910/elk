@@ -1,3 +1,5 @@
 .idea
 build
 _example
+vendor
+.vscode/
