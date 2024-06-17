@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"entgo.io/ent"
+	ent "entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
 
@@ -25,4 +25,9 @@ func (Badge) Mixin() []ent.Mixin {
 // Edges of the Badge.
 func (Badge) Edges() []ent.Edge {
 	return nil
+}
+
+// Pages holds the schema definition for the Pages entity.
+type Pages struct {
+	ent.Schema
 }
