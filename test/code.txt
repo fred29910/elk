@@ -1,0 +1,16 @@
+[]ast.Stmt {
+	&ast.AssignStmt {
+		Lhs: []ast.Expr {
+			&ast.Ident {
+				Name: "xiam",
+			},
+		},
+		Tok: :=,
+		Rhs: []ast.Expr {
+			&ast.BasicLit {
+				Kind: INT,
+				Value: "1",
+			},
+		},
+	},
+}

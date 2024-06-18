@@ -1,0 +1,4 @@
+go2ast
+*.exe
+.vscode
+.idea
