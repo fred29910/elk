@@ -3,35 +3,52 @@ package main
 import (
 	"fmt"
 	"github.com/getkin/kin-openapi/openapi3"
+	"gopkg.in/yaml.v3"
 	"os"
 )
 
 func main() {
-	fxpm :=
-		openapi3.NewResponse().WithContent(openapi3.NewContentWithJSONSchema(&openapi3.Schema{
-			Type:        &openapi3.Types{openapi3.TypeArray},
-			Description: "xaisdma",
-			Items: &openapi3.SchemaRef{
+
+	oneSs := openapi3.SchemaRef{Value: &openapi3.Schema{
+		Type: &openapi3.Types{openapi3.TypeObject},
+		Properties: map[string]*openapi3.SchemaRef{
+			"id": {
 				Value: &openapi3.Schema{
-					Type: &openapi3.Types{openapi3.TypeObject},
-					Properties: map[string]*openapi3.SchemaRef{
-						"id": {
-							Value: &openapi3.Schema{
-								Type: &openapi3.Types{openapi3.TypeInteger},
-							},
-						},
-						"name": {
-							Value: &openapi3.Schema{
-								Type: &openapi3.Types{openapi3.TypeString},
-							},
-						},
-					},
+					Type: &openapi3.Types{openapi3.TypeInteger},
 				},
 			},
-		}))
-	respx := openapi3.NewResponses(openapi3.WithStatus(200, &openapi3.ResponseRef{
+			"age": {
+				Value: &openapi3.Schema{
+					Type: &openapi3.Types{openapi3.TypeInteger},
+				},
+			},
+		},
+	}}
+
+	twoSs := openapi3.SchemaRef{Value: &openapi3.Schema{
+		Type: &openapi3.Types{openapi3.TypeObject},
+		Properties: map[string]*openapi3.SchemaRef{
+			"id": {
+				Value: &openapi3.Schema{
+					Type: &openapi3.Types{openapi3.TypeInteger},
+				},
+			},
+			"name": {
+				Value: &openapi3.Schema{
+					Type: &openapi3.Types{openapi3.TypeString},
+				},
+			},
+		},
+	}}
+	fxpm := openapi3.NewResponse().WithContent(openapi3.NewContentWithJSONSchema(&openapi3.Schema{
+		OneOf: openapi3.SchemaRefs{&oneSs, &twoSs},
+	})).WithDescription("xasidamidsmamds")
+	pxxsma := openapi3.WithStatus(200, &openapi3.ResponseRef{
 		Value: fxpm,
-	}))
+	})
+
+	respx := openapi3.NewResponses(pxxsma)
+
 	paths := openapi3.NewPaths()
 	paths.Set("/xiasmai", &openapi3.PathItem{
 		Summary:     "小阿三大",
@@ -68,13 +85,20 @@ func main() {
 
 	bs, err := doc.MarshalJSON()
 
-	// 将 YAML 数据写入文件
+	// 将 json 数据写入文件
 	err = os.WriteFile("openapi3.json", bs, 0644)
 	if err != nil {
 		fmt.Printf("Error writing YAML to file: %v\n", err)
 		return
 	}
 
+	bs, err = yaml.Marshal(doc)
+	// 将 YAML 数据写入文件
+	err = os.WriteFile("openapi3.yml", bs, 0644)
+	if err != nil {
+		fmt.Printf("Error writing YAML to file: %v\n", err)
+		return
+	}
 }
 
 // StringPtr 返回一个指向给定字符串的指针
