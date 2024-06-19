@@ -7,11 +7,35 @@ import (
 )
 
 func main() {
+	fxpm :=
+		openapi3.NewResponse().WithContent(openapi3.NewContentWithJSONSchema(&openapi3.Schema{
+			Type:        &openapi3.Types{openapi3.TypeArray},
+			Description: "xaisdma",
+			Items: &openapi3.SchemaRef{
+				Value: &openapi3.Schema{
+					Type: &openapi3.Types{openapi3.TypeObject},
+					Properties: map[string]*openapi3.SchemaRef{
+						"id": {
+							Value: &openapi3.Schema{
+								Type: &openapi3.Types{openapi3.TypeInteger},
+							},
+						},
+						"name": {
+							Value: &openapi3.Schema{
+								Type: &openapi3.Types{openapi3.TypeString},
+							},
+						},
+					},
+				},
+			},
+		}))
+	respx := openapi3.NewResponses(openapi3.WithStatus(200, &openapi3.ResponseRef{
+		Value: fxpm,
+	}))
 	paths := openapi3.NewPaths()
 	paths.Set("/xiasmai", &openapi3.PathItem{
-		Ref:         "",
-		Summary:     "",
-		Description: "",
+		Summary:     "小阿三大",
+		Description: "小阿三大苏打",
 		Connect:     nil,
 		Delete:      nil,
 		Get:         nil,
@@ -26,33 +50,7 @@ func main() {
 			OperationID: "pimomi",
 			Parameters:  nil,
 			RequestBody: nil,
-			Responses: openapi3.NewResponses(
-				openapi3.WithName("seras", openapi3.NewResponse().WithContent(openapi3.NewContentWithJSONSchema(&openapi3.Schema{
-					Type: &openapi3.Types{openapi3.TypeArray},
-					Items: &openapi3.SchemaRef{
-						Value: &openapi3.Schema{
-							Type: &openapi3.Types{openapi3.TypeObject},
-							Properties: map[string]*openapi3.SchemaRef{
-								"id": {
-									Value: &openapi3.Schema{
-										Type: &openapi3.Types{openapi3.TypeInteger},
-									},
-								},
-								"name": {
-									Value: &openapi3.Schema{
-										Type: &openapi3.Types{openapi3.TypeString},
-									},
-								},
-							},
-						},
-					},
-				})).WithDescription("interface ttest")),
-			),
-			Callbacks:    nil,
-			Deprecated:   false,
-			Security:     nil,
-			Servers:      nil,
-			ExternalDocs: nil,
+			Responses:   respx,
 		},
 		Trace:      nil,
 		Servers:    nil,
