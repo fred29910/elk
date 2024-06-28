@@ -1,33 +1,29 @@
 package schema
 
-import (
-	ent "entgo.io/ent"
-	"entgo.io/ent/schema/field"
+import "go/ast"
+
+const (
+	xiamsi  = 1
+	xiaxmsi = 1
 )
 
-// Badge holds the schema definition for the Badge entity.
-type Badge struct {
-	ent.Schema
-}
+var xiasma = 3
 
-// Fields of the Badge.
-func (Badge) Fields() []ent.Field {
-	return []ent.Field{
-		field.Uint32("id"),
-	}
-}
-
-// Mixin of the Badge.
-func (Badge) Mixin() []ent.Mixin {
-	return []ent.Mixin{}
-}
-
-// Edges of the Badge.
-func (Badge) Edges() []ent.Edge {
+func simpleData() *ast.File {
 	return nil
 }
 
-// Pages holds the schema definition for the Pages entity.
-type Pages struct {
-	ent.Schema
+type Tvm struct {
+	xia int64
+}
+type Tvmxv struct {
+	xia int64
+}
+
+func (xas *Tvm) getvalue() {
+
+}
+
+type name interface {
+	sasiam()
 }
