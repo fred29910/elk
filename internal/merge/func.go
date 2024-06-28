@@ -1,11 +1,8 @@
 package merge
 
 import (
-	"bytes"
 	log "github.com/sirupsen/logrus"
 	"go/ast"
-	"go/printer"
-	"go/token"
 )
 
 func FuncMerge(new, old, target *ast.File) error {
@@ -80,7 +77,7 @@ func funcComparators(f1, f2 *ast.FuncDecl) (bool, error) {
 		f1,
 	}
 
-	f1string, err := formatNode(funcWapper)
+	f1string, err := FormatNode(funcWapper)
 	if err != nil {
 
 		log.Error("cat not parser data", err)
@@ -91,7 +88,7 @@ func funcComparators(f1, f2 *ast.FuncDecl) (bool, error) {
 		f2,
 	}
 
-	f2string, err := formatNode(funcWapper)
+	f2string, err := FormatNode(funcWapper)
 	if err != nil {
 
 		log.Error("cat not parser data", err)
@@ -99,15 +96,4 @@ func funcComparators(f1, f2 *ast.FuncDecl) (bool, error) {
 	}
 
 	return f2string == f1string, nil
-}
-
-// formatNode formats an AST node and returns the formatted code as a string.
-func formatNode(node *ast.File) (string, error) {
-	fset := token.NewFileSet()
-	var buf bytes.Buffer
-	err := printer.Fprint(&buf, fset, node)
-	if err != nil {
-		return "", err
-	}
-	return buf.String(), nil
 }

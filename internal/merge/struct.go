@@ -10,7 +10,7 @@ func StructMerge(new, old, target *ast.File) error {
 	nStruct := getStruct(new)
 	lStruct := getStruct(old)
 
-	var mergedImp map[string]*ast.StructType
+	mergedImp := make(map[string]*ast.StructType)
 
 	conflictMap := make(map[string]bool)
 
@@ -99,7 +99,7 @@ func structComparators(st *ast.StructType, sf1 *ast.StructType) (bool, error) {
 			},
 		},
 	}
-	f1string, err := formatNode(funcWapper)
+	f1string, err := FormatNode(funcWapper)
 	if err != nil {
 
 		log.Error("cat not parser data", err)
@@ -112,7 +112,7 @@ func structComparators(st *ast.StructType, sf1 *ast.StructType) (bool, error) {
 			},
 		},
 	}
-	f2string, err := formatNode(funcWapper)
+	f2string, err := FormatNode(funcWapper)
 	if err != nil {
 
 		log.Error("cat not parser data", err)

@@ -10,7 +10,7 @@ func InterfaceMerge(new, old, target *ast.File) error {
 	nStruct := getInterface(new)
 	lStruct := getInterface(old)
 
-	var mergedImp map[string]*ast.InterfaceType
+	mergedImp := make(map[string]*ast.InterfaceType)
 
 	conflictMap := make(map[string]bool)
 
@@ -99,7 +99,7 @@ func interfaceComparators(st *ast.InterfaceType, sf1 *ast.InterfaceType) (bool, 
 			},
 		},
 	}
-	f1string, err := formatNode(funcWapper)
+	f1string, err := FormatNode(funcWapper)
 	if err != nil {
 
 		log.Error("cat not parser data", err)
@@ -112,7 +112,7 @@ func interfaceComparators(st *ast.InterfaceType, sf1 *ast.InterfaceType) (bool, 
 			},
 		},
 	}
-	f2string, err := formatNode(funcWapper)
+	f2string, err := FormatNode(funcWapper)
 	if err != nil {
 
 		log.Error("cat not parser data", err)
