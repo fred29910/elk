@@ -22,17 +22,26 @@ func (m *Module) Execute(targets map[string]pgs.File, pkgs map[string]pgs.Packag
 	for _, f := range targets {
 		m.Push(f.Name().String()).Debug("reporting")
 
-		fmt.Fprintf(buf, "--- %v ---", f.Name())
+		fmt.Fprintf(buf, "--- %v --- \n", f.Name())
 
 		for i, msg := range f.AllMessages() {
+			m.Debug(msg.SourceCodeInfo().LeadingComments())
 			fmt.Fprintf(buf, "%03d. %v\n", i, msg.Name())
+			msg.Descriptor()
+
+			m.Debug(fmt.Sprintf("enums all is pxv %v", msg))
 		}
 
 		m.Pop()
+
+		for eIndex, eVaule := range f.AllEnums() {
+			fmt.Fprintf(buf, "%03d. %v\n", eIndex, eVaule.Name())
+			m.Debug(fmt.Sprintf("enums all is pxv %v", eVaule))
+		}
 	}
 
 	m.OverwriteCustomFile(
-		"/tmp/report.txt",
+		"./tmp/report.txt",
 		buf.String(),
 		0644,
 	)

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "example.com/project/protos/fizz";
+
+// 每个 proto 文件需要定义自己的包名，类似 c++ 的名称空间。
+package hello;
+
+// 数据结构通过 message 定义
+message Echox {
+  // 每个 message 可以有多个 field。
+  // 每个 field 需要指定类型、字段名和编号。
+  // Protocol Buffers 在内部使用编号区分字段，一旦指定就不能更改。
+  string msg = 1;
+}
+
+// 服务使用 servcie 定义
+service Demo {
+  // 每个 service 可以定义多个 rpc
+  // 每个 rpc 需要指定接口名、传入消息和返回消息三部分。
+  rpc Echo(Echox) returns (Echox);
+}

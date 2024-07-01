@@ -3,3 +3,5 @@ build
 _example
 vendor
 .vscode/
+
+*.pb.bin
