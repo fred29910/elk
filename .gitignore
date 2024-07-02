@@ -4,4 +4,5 @@ _example
 vendor
 .vscode/
 
+test/example.com
 *.pb.bin

@@ -12,10 +12,10 @@ cd $script_dir
 
 
 # DEBUG=true protoc --go_out=. --plugin=protoc-gen-msg-handle --msg-handle_out=. proto/test.proto
-DEBUG=true protoc --go_out=.  --msg-handle_out=. proto/test.proto
+DEBUG=true protoc --go_out=.  --msg-handle_out=. proto/*.proto
 
 
 go install github.com/lyft/protoc-gen-star/protoc-gen-debug@latest
 protoc \
   --debug_out=".:." \
-  proto/test.proto
+  proto/*.proto
