@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	pgs "github.com/lyft/protoc-gen-star/v2"
+	"github.com/masseelch/elk/internal/parser"
 )
 
 type Module struct {
@@ -30,9 +31,9 @@ func (m *Module) Execute(targets map[string]pgs.File, pkgs map[string]pgs.Packag
 				for _, value := range eVaule.Values() {
 					m.MSGValue[value.Name().String()] = value.Value()
 					fmt.Fprintf(buf, "---%v %v %v --- \n", eVaule.Name(), value.Name().String(), value.Value())
+					m.MSGValue[value.Name().String()] = value.Value()
 				}
 			}
-
 			fmt.Fprintf(buf, "%03d. %v\n", eIndex, eVaule.Name())
 			m.Debug(fmt.Sprintf("enums all is pxv %v", eVaule))
 		}
@@ -42,7 +43,10 @@ func (m *Module) Execute(targets map[string]pgs.File, pkgs map[string]pgs.Packag
 		fmt.Fprintf(buf, "---%v %v --- \n", s, f.Package().ProtoName().LowerSnakeCase())
 
 		for i, msg := range f.AllMessages() {
-			m.Debug(msg.SourceCodeInfo().LeadingComments())
+			msginfo := parser.MsgParser(msg.SourceCodeInfo().LeadingComments())
+			if msginfo != nil {
+				m.Log(msg.Name(), " is a handle ", msginfo)
+			}
 			fmt.Fprintf(buf, "%03d. %v\n", i, msg.Name())
 			msg.Descriptor()
 			m.Debug(fmt.Sprintf("enums all is pxv %v", msg))
