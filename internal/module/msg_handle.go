@@ -22,10 +22,13 @@ func (m *Module) Execute(targets map[string]pgs.File, pkgs map[string]pgs.Packag
 	buf := &bytes.Buffer{}
 
 	for s, f := range targets {
+		goPkg := f.Descriptor().GetOptions().GetGoPackage()
+		protoPkg := f.Package().ProtoName().String()
+		m.Logf("Protobuf package: %s maps to Go package: %s", protoPkg, goPkg)
 		for eIndex, eVaule := range f.AllEnums() {
 			if eVaule.Name() == msgName {
-
 				for _, value := range eVaule.Values() {
+					m.MSGValue[value.Name().String()] = value.Value()
 					fmt.Fprintf(buf, "---%v %v %v --- \n", eVaule.Name(), value.Name().String(), value.Value())
 				}
 			}
@@ -36,7 +39,7 @@ func (m *Module) Execute(targets map[string]pgs.File, pkgs map[string]pgs.Packag
 
 		m.Push(f.Name().String()).Debug("reporting")
 
-		fmt.Fprintf(buf, "---%v %v --- \n", s, f.Descriptor().GetPackage())
+		fmt.Fprintf(buf, "---%v %v --- \n", s, f.Package().ProtoName().LowerSnakeCase())
 
 		for i, msg := range f.AllMessages() {
 			m.Debug(msg.SourceCodeInfo().LeadingComments())

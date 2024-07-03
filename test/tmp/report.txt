@@ -1,8 +1,8 @@
+---proto/test.proto hello --- 
+000. Echox
 ---MSG Min_MSG 0 --- 
 ---MSG CMD_Heartbeat_Req 1 --- 
 ---MSG CMD_Heartbeat_Reply 2 --- 
 000. MSG
 ---proto/msg.proto hello --- 
 000. HeartbeatReq
----proto/test.proto hello --- 
-000. Echox
