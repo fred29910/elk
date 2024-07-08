@@ -9,19 +9,26 @@ import (
 
 type Module struct {
 	*pgs.ModuleBase
-	//ctx pgsgo.Context
+	//ctx      pgsgo.Context
 	MSGValue map[string]int32
 }
 
 const msgName = "MSG"
 
-func New() pgs.Module { return &Module{&pgs.ModuleBase{}, make(map[string]int32)} }
+func New() pgs.Module {
+	m := &Module{ModuleBase: &pgs.ModuleBase{}}
+	m.MSGValue = make(map[string]int32)
+	//m.ctx
+	return m
+}
 
 func (m *Module) Name() string { return "msg_handle" }
 
 func (m *Module) Execute(targets map[string]pgs.File, pkgs map[string]pgs.Package) []pgs.Artifact {
 	buf := &bytes.Buffer{}
-
+	for s, s2 := range m.Parameters() {
+		m.Logf("%v ---> %v", s, s2)
+	}
 	for s, f := range targets {
 		goPkg := f.Descriptor().GetOptions().GetGoPackage()
 		protoPkg := f.Package().ProtoName().String()
