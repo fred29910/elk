@@ -14,6 +14,9 @@ var comDefine = regexp.MustCompile(`^\s*@common\s+[a-zA-Z_ ]+$`)
 // nobind define
 var noBindDefine = regexp.MustCompile(`^\s*@nobind\s*$`)
 
+// handle define, if handle is define , not have nobind
+var handleDefine = regexp.MustCompile(`^\s*@handle\s*$`)
+
 func IsMsg(ss string) bool {
 	return MsgParser(ss) != nil
 }
@@ -21,13 +24,16 @@ func IsMsg(ss string) bool {
 func MsgParser(ss string) *Msg {
 	lines := strings.Split(ss, "\n")
 	var svm string
-	var nbd bool
+	var nbd, handle bool
 	for _, line := range lines {
 		if msgDefine.MatchString(line) {
 			svm = msgDefine.FindString(line)
 		}
 		if !nbd {
 			nbd = noBindDefine.MatchString(line)
+		}
+		if !handle {
+			handle = handleDefine.MatchString(line)
 		}
 	}
 	if svm == "" {
@@ -36,12 +42,14 @@ func MsgParser(ss string) *Msg {
 	return &Msg{
 		ID:     strings.TrimSpace(strings.ReplaceAll(svm, "@msg", "")),
 		NoBind: nbd,
+		Handle: handle,
 	}
 }
 
 type Msg struct {
 	ID     string
 	NoBind bool
+	Handle bool
 }
 
 func CommonsParser(ss string) []string {

@@ -39,6 +39,16 @@ func TestParserMsg(t *testing.T) {
 				NoBind: true,
 			},
 		},
+		{
+			name: "not first line with handle",
+			args: `xiamsdiaxmasmdafds
+@msg xiasmddam
+@handle`,
+			want: &Msg{
+				ID:     "xiasmddam",
+				Handle: true,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
