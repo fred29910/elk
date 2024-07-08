@@ -11,7 +11,7 @@ cd $root_dir/cmd/protoc-gen-msg-handle && go install ./
 cd $script_dir
 
 
-# DEBUG=true protoc --go_out=. --plugin=protoc-gen-msg-handle --msg-handle_out=. proto/test.proto
+# DEBUG=true protoc --go_out=. --go_opt=paths=source_relative  proto/*.proto
 DEBUG=true protoc  --msg-handle_out=. --msg-handle_opt=lvm=xiamsa proto/*.proto
 
 

@@ -1,15 +1,16 @@
 syntax = "proto3";
 
-option go_package = "example.com/project/protos/fizz";
+option go_package = "github.com/masseelch/elk/test/proto";
 // 每个 proto 文件需要定义自己的包名，类似 c++ 的名称空间。
 package hello;
 enum MSG {
   Min_MSG =0;
-  CMD_Heartbeat_Req =1;
-  CMD_Heartbeat_Reply =2;
+  CMD_HEARTBEAT_REQ =1;
+  CMD_HEARTBEAT_REPLY =2;
+  CMD_HELLO_REQ =3;
 }
 
-// @msg CMD_Heartbeat_Req
+// @msg CMD_HEARTBEAT_REQ
 message HeartbeatReq {
   int64 seq =1; // 开始时间
 }

@@ -1,10 +1,11 @@
 syntax = "proto3";
 
-option go_package = "example.com/project/protos/fizz";
+option go_package = "github.com/masseelch/elk/test/proto";
 
 // 每个 proto 文件需要定义自己的包名，类似 c++ 的名称空间。
 package hello;
 
+// @msg CMD_HELLO_REQ
 // 数据结构通过 message 定义
 message Echox {
   // 每个 message 可以有多个 field。

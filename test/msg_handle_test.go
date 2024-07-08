@@ -18,11 +18,14 @@ func TestModule(t *testing.T) {
 
 	fs := afero.NewMemMapFs()
 	res := &bytes.Buffer{}
-
+	pgss := func(p pgs.Parameters) {
+		p.SetStr("xiasm", "xasdafsda")
+	}
 	pgs.Init(
 		pgs.ProtocInput(req),  // use the pre-generated request
 		pgs.ProtocOutput(res), // capture CodeGeneratorResponse
 		pgs.FileSystem(fs),    // capture any custom files written directly to disk
+		pgs.MutateParams(pgss),
 	).RegisterModule(module.New()).Render()
 
 	// check res and the fs for output

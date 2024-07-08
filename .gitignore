@@ -4,5 +4,5 @@ _example
 vendor
 .vscode/
 
-test/example.com
+test/proto/*.go
 *.pb.bin
