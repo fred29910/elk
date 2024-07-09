@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// 每个 proto 文件需要定义自己的包名，类似 c++ 的名称空间。
+//@common CMD_HEARTBEAT_REQ
+package pk;
+
+
+option go_package = "github.com/masseelch/elk/test/proto/pk";
+
+
+
+// @msg CMD_HEARTBEAT_REPLY
+// 数据结构通过 message 定义
+message Hne {
+  // 每个 message 可以有多个 field。
+  // 每个 field 需要指定类型、字段名和编号。
+  // Protocol Buffers 在内部使用编号区分字段，一旦指定就不能更改。
+  string msg = 1;
+}

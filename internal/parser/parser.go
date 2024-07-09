@@ -48,6 +48,7 @@ func MsgParser(ss string) *Msg {
 
 type Msg struct {
 	ID     string
+	Name   string
 	NoBind bool
 	Handle bool
 }

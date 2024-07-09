@@ -11,6 +11,7 @@ enum MSG {
 }
 
 // @msg CMD_HEARTBEAT_REQ
+// @handle
 message HeartbeatReq {
   int64 seq =1; // 开始时间
 }

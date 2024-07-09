@@ -5,4 +5,7 @@ vendor
 .vscode/
 
 test/proto/*.go
+test/proto/pk/*.go
 *.pb.bin
+
+bin

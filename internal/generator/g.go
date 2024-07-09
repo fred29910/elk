@@ -12,7 +12,8 @@ type Package struct {
 
 	Cms map[string]*parser.Msg
 
-	OutDir string // 可以是相对路径， 也可以是绝对路径， 控制handle 的输出位置。 由命令行参数控制， 如果不填写，默认输出到common包位置
+	OutDir        string // 可以是相对路径， 也可以是绝对路径， 控制handle 的输出位置。 由命令行参数控制， 如果不填写，默认输出到common包位置
+	GopackageName string
 }
 
 type HandleInfo struct {

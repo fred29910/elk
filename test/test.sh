@@ -11,11 +11,11 @@ cd $root_dir/cmd/protoc-gen-msg-handle && go install ./
 cd $script_dir
 
 
-# DEBUG=true protoc --go_out=. --go_opt=paths=source_relative  proto/*.proto
-DEBUG=true protoc  --msg-handle_out=. --msg-handle_opt=lvm=xiamsa proto/*.proto
+DEBUG=true protoc --go_out=. --go_opt=paths=source_relative  proto/*.proto proto/pk/*.proto
+DEBUG=true protoc --msg-handle_out=. --msg-handle_opt=pk=../internal/pk  proto/*.proto proto/pk/*.proto
 
 
-go install github.com/lyft/protoc-gen-star/protoc-gen-debug@latest
+#go install github.com/lyft/protoc-gen-star/protoc-gen-debug@latest
 protoc \
   --debug_out=".:." \
-  proto/*.proto
+  proto/*.proto proto/pk/*.proto
