@@ -1,15 +1,29 @@
 package generator
 
 import (
-	"github.com/masseelch/elk/internal/parser"
-	"github.com/stoewer/go-strcase"
 	"go/ast"
 	"go/token"
 	"strings"
+
+	"github.com/masseelch/elk/internal/parser"
+	"github.com/stoewer/go-strcase"
 )
 
-func Gen(MsgDefine, Package) (string, error) {
+func Gen(cn MsgDefine, pg Package) (string, error) {
 	//fset := token.NewFileSet()
+	f := ast.File{
+		Name: ast.NewIdent(cn.Pkg),
+	}
+
+	err := handleGen(cn, pg, &f)
+	if err != nil {
+		return "", err
+	}
+	err = outerGen(cn, pg, &f)
+	if err != nil {
+		return "", err
+	}
+
 	return "", nil
 }
 
