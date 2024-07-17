@@ -1,7 +1,9 @@
 package generator
 
 import (
+	"bytes"
 	"go/ast"
+	"go/format"
 	"go/token"
 	"strings"
 
@@ -9,10 +11,21 @@ import (
 	"github.com/stoewer/go-strcase"
 )
 
+// FormatNode formats an AST node and returns the formatted code as a string.
+func FormatNode(node *ast.File) (string, error) {
+	fset := token.NewFileSet()
+	var buf bytes.Buffer
+	// 使用 go/format 包来格式化代码
+	if err := format.Node(&buf, fset, node); err != nil {
+		panic(err)
+	}
+	return buf.String(), nil
+}
+
 func Gen(cn MsgDefine, pg Package) (string, error) {
 	//fset := token.NewFileSet()
 	f := ast.File{
-		Name: ast.NewIdent(cn.Pkg),
+		Name: ast.NewIdent(pg.Name),
 	}
 
 	err := handleGen(cn, pg, &f)
@@ -24,7 +37,7 @@ func Gen(cn MsgDefine, pg Package) (string, error) {
 		return "", err
 	}
 
-	return "", nil
+	return FormatNode(&f)
 }
 
 func handleGen(cn MsgDefine, pg Package, f *ast.File) error {
@@ -32,7 +45,6 @@ func handleGen(cn MsgDefine, pg Package, f *ast.File) error {
 	var handleList []*ast.Field
 	handleFs := func(msg *parser.Msg) {
 		handleDef := ast.Field{
-			Doc:   nil,
 			Names: []*ast.Ident{ast.NewIdent(msgIDToHandleName(msg.ID))},
 			Type: &ast.FuncType{
 				Params: &ast.FieldList{

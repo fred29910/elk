@@ -2,10 +2,11 @@ package module
 
 import (
 	"fmt"
+	"path/filepath"
+
 	pgs "github.com/lyft/protoc-gen-star/v2"
 	"github.com/masseelch/elk/internal/generator"
 	"github.com/masseelch/elk/internal/parser"
-	"path/filepath"
 )
 
 type Module struct {
@@ -151,6 +152,7 @@ outerLoop:
 			if msgDf == nil {
 				continue
 			}
+			msgDf.Name = message.Name().UpperCamelCase().String()
 			if _, ok := m.MSGValue.Msgs[msgDf.ID]; !ok {
 				return fmt.Errorf("cat not get msg %s", msgDf.ID)
 			}
