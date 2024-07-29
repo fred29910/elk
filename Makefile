@@ -1,2 +1,3 @@
+.PHONY: build 
 build:
-	go build --trimpath -o build/ ./cmd/...
+	GOOS=js GOARCH=wasm go build --trimpath -o build/main.wasm ./cmd/astpv/main.go
