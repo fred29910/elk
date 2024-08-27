@@ -159,6 +159,7 @@ type printer struct {
 	indent int         // current indentation level
 	last   byte        // the last byte processed by Write
 	line   int         // current line number
+	// pvmap  map[string]string // ident rename
 }
 
 var indent = []byte("  ")
@@ -239,6 +240,13 @@ func (p *printer) print(x reflect.Value) {
 		// to keep track of objects that have been printed
 		// already and print the respective line number instead
 		ptr := x.Interface()
+		if indentDef, ok := ptr.(*ast.Ident); ok {
+			p.printf("ast.NewIdent(\"%s\")", indentDef.Name)
+			return
+		}
+		// if basicLit,ok:=ptr.(*ast.BasicLit);ok{
+		// 	p.printf("ast.NewIdent(\"%s\")", basicLit.Value)
+		// }
 
 		p.ptrmap[ptr] = p.line
 		p.print(x.Elem())
