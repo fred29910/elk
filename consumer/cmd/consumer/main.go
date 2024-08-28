@@ -14,8 +14,17 @@ func failOnError(err error, msg string) {
 	}
 }
 
+const (
+	mqURL        = "amqp://dev:dev@localhost:5672/"
+	exchangeName = "amq.direct"
+	exchangeType = "direct"
+	routingKey   = "roomdata"
+
+	queueName = "game.to.data"
+)
+
 func main() {
-	conn, err := amqp.Dial("amqp://tracking:dev@localhost:5672/")
+	conn, err := amqp.Dial(mqURL)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -25,23 +34,43 @@ func main() {
 
 	// 声明一个队列
 	q, err := ch.QueueDeclare(
-		"tracking.data", // 队列名称
-		true,            // 是否持久化
-		false,           // 是否自动删除
-		false,           // 是否排他
-		false,           // 是否阻塞
-		nil,             // 其他参数
+		queueName, // 队列名称
+		true,      // 是否持久化
+		false,     // 是否自动删除
+		false,     // 是否排他
+		false,     // 是否阻塞
+		nil,       // 其他参数
 	)
 	failOnError(err, "Failed to declare a queue")
+
+	err = ch.ExchangeDeclare(
+		exchangeName, // name of the exchange
+		exchangeType, // type
+		true,         // durable
+		false,        // delete when complete
+		false,        // internal
+		false,        // noWait
+		nil,          // arguments
+	)
+	failOnError(err, "Failed to declare a exchange")
+
+	err = ch.QueueBind(
+		q.Name,       // name of the queue
+		routingKey,   // bindingKey
+		exchangeName, // sourceExchange
+		false,        // noWait
+		nil,          // arguments
+	)
+	failOnError(err, "Failed to declare a exchange")
 
 	// 发送消息
 	body := "Hello World!"
 	err = ch.Publish(
-		"amq_tracking", // 交换机名称
-		// q.Name,         // 路由键，即队列名称
-		"tracking.key", // 路由键，即队列名称
-		false,          // 是否强制
-		false,          // 是否立即
+		"amq.direct", // 交换机名称
+		// q.Name,       // 路由键，即队列名称
+		"roomdata", // 路由键，即队列名称
+		false,      // 是否强制
+		false,      // 是否立即
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        []byte(body),
