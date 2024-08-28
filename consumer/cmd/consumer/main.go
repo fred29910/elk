@@ -1,47 +1,73 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/nats-io/nats.go"
+	"github.com/streadway/amqp"
 )
 
-// const ntsUrl = "127.0.0.1:4222"
+// 连接到 RabbitMQ 服务器
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
+}
 
 func main() {
+	conn, err := amqp.Dial("amqp://tracking:dev@localhost:5672/")
+	failOnError(err, "Failed to connect to RabbitMQ")
+	defer conn.Close()
 
-	nc, err := nats.Connect(nats.DefaultURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer nc.Close()
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
 
-	// Subscribe
-	sub1, err := nc.Subscribe("updates", func(m *nats.Msg) {
-		log.Printf("sub1 Received a message: %s\n", string(m.Data))
-	})
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	// 声明一个队列
+	q, err := ch.QueueDeclare(
+		"tracking.data", // 队列名称
+		true,            // 是否持久化
+		false,           // 是否自动删除
+		false,           // 是否排他
+		false,           // 是否阻塞
+		nil,             // 其他参数
+	)
+	failOnError(err, "Failed to declare a queue")
 
-	// Set limits of 1000 messages or 5MB, whichever comes first
-	sub1.SetPendingLimits(1000, 5*1024*1024)
+	// 发送消息
+	body := "Hello World!"
+	err = ch.Publish(
+		"amq_tracking", // 交换机名称
+		// q.Name,         // 路由键，即队列名称
+		"tracking.key", // 路由键，即队列名称
+		false,          // 是否强制
+		false,          // 是否立即
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(body),
+		})
+	failOnError(err, "Failed to publish a message")
+	fmt.Printf(" [x] Sent %s\n", body)
 
-	// Subscribe
-	sub2, err := nc.Subscribe("updates", func(m *nats.Msg) {
-		log.Printf("sub2 Received a message: %s\n", string(m.Data))
-	})
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	// 消费消息
+	msgs, err := ch.Consume(
+		q.Name, // 队列名称
+		"",     // 消费者名称
+		true,   // 自动应答
+		false,  // 是否排他
+		false,  // 是否阻塞
+		false,  // 其他参数
+		nil,    // 其他参数
+	)
+	failOnError(err, "Failed to register a consumer")
 
-	// Set no limits for this subscription
-	sub2.SetPendingLimits(-1, -1)
+	// 使用 Goroutine 来处理消息
+	go func() {
+		for d := range msgs {
+			log.Printf("Received a message: %s", d.Body)
+		}
+	}()
 
-	// Close the connection
-	nc.Close()
-
+	fmt.Println(" [*] Waiting for messages. To exit press CTRL+C")
 	select {}
 }
