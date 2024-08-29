@@ -16,11 +16,11 @@ func failOnError(err error, msg string) {
 
 const (
 	mqURL        = "amqp://dev:dev@localhost:5672/"
-	exchangeName = "amq.direct"
+	exchangeName = "amq_tracking"
 	exchangeType = "direct"
-	routingKey   = "roomdata"
+	routingKey   = "tracking.key"
 
-	queueName = "game.to.data"
+	queueName = "tracking.data"
 )
 
 func main() {
@@ -66,9 +66,9 @@ func main() {
 	// 发送消息
 	body := "Hello World!"
 	err = ch.Publish(
-		"amq.direct", // 交换机名称
+		exchangeName, // 交换机名称
 		// q.Name,       // 路由键，即队列名称
-		"roomdata", // 路由键，即队列名称
+		routingKey, // 路由键，即队列名称
 		false,      // 是否强制
 		false,      // 是否立即
 		amqp.Publishing{
