@@ -2,74 +2,85 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"sync"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
-// MyContext 是自定义的 context
-type MyContext struct {
-	context.Context               // 嵌入标准 context，以便继承其行为
-	done            chan struct{} // 用于通知取消的通道
-	err             error         // 保存取消时的错误
+// SemaphoreContext 是一个自定义的 Context，用于处理信号量
+type SemaphoreContext struct {
+	context.Context
+	cancelFunc context.CancelFunc
+	err        error
+	mu         sync.Mutex
 }
 
-// NewMyContext 创建一个自定义的 context
-func NewMyContext(parent context.Context) *MyContext {
-	return &MyContext{
-		Context: parent,
-		done:    make(chan struct{}),
+// NewSemaphoreContext 创建一个带有信号量取消功能的 context
+func NewSemaphoreContext(parent context.Context) (*SemaphoreContext, context.CancelFunc) {
+	ctx, cancel := context.WithCancel(parent)
+	return &SemaphoreContext{
+		Context:    ctx,
+		cancelFunc: cancel,
+	}, cancel
+}
+
+// CancelWithError 取消信号量并传递错误
+func (s *SemaphoreContext) CancelWithError(err error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.err = err
+	s.cancelFunc()
+}
+
+// Err 实现 context.Context 的 Err 方法，返回自定义错误
+func (s *SemaphoreContext) Err() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.err != nil {
+		return s.err
+	}
+	return s.Context.Err()
+}
+
+// 示例函数，演示信号量的使用
+func worker(ctx *SemaphoreContext, id int) {
+	select {
+	case <-time.After(2 * time.Second):
+		fmt.Printf("Worker %d finished work\n", id)
+	case <-ctx.Done():
+		fmt.Printf("Worker %d canceled: %v\n", id, ctx.Err())
 	}
 }
 
-// Done 返回一个通道，当操作应该取消时关闭这个通道
-func (c *MyContext) Done() <-chan struct{} {
-	return c.done
-}
-
-// Err 返回 context 被取消的原因
-func (c *MyContext) Err() error {
-	return c.err
-}
-
-// Cancel 手动取消 context
-func (c *MyContext) Cancel(err error) {
-	c.err = err
-	close(c.done)
-}
-
-// Deadline 实现 context.Context 的 Deadline 方法
-func (c *MyContext) Deadline() (deadline time.Time, ok bool) {
-	deadline, ok = c.Context.Deadline()
-	return
-}
-
-// Value 实现 context.Context 的 Value 方法
-func (c *MyContext) Value(key interface{}) interface{} {
-	return c.Context.Value(key)
-}
-
 func main() {
-	// 创建一个父 context
-	parentCtx := context.Background()
+	var t uint
+	_, err := fmt.Scanln(&t)
+	if err != nil {
+		log.Err(err).Msg("failed to scan input")
+		return
+	}
+	parent := context.Background()
+	semaphoreCtx, cancel := NewSemaphoreContext(parent)
 
-	// 创建一个自定义的 MyContext
-	myCtx := NewMyContext(parentCtx)
+	var wg sync.WaitGroup
+	for i := 1; i <= 3; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			worker(semaphoreCtx, id)
+		}(i)
+	}
 
-	// 启动一个 goroutine 来监听自定义 context
-	go func() {
-		select {
-		case <-myCtx.Done():
-			fmt.Println("MyContext cancelled:", myCtx.Err())
-			return
-		}
-	}()
+	if cancel != nil {
+		defer cancel()
+	}
+	time.Sleep(time.Duration(t) * time.Second)
+	// 使用自定义错误取消所有 goroutine
+	semaphoreCtx.CancelWithError(errors.New("custom error: semaphore canceled"))
 
-	// 模拟工作
-	time.Sleep(2 * time.Second)
-
-	// 手动取消自定义 context
-	myCtx.Cancel(fmt.Errorf("operation timed out"))
-
-	// 等待 goroutine 处理取消信号
-	time.Sleep(1 * time.Second)
+	wg.Wait()
+	fmt.Println("All workers done")
 }
