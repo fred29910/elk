@@ -19,8 +19,8 @@ type SemaphoreContext struct {
 }
 
 // NewSemaphoreContext 创建一个带有信号量取消功能的 context
-func NewSemaphoreContext(parent context.Context) (*SemaphoreContext, context.CancelFunc) {
-	ctx, cancel := context.WithCancel(parent)
+func NewSemaphoreContext(parent context.Context, tm time.Duration) (*SemaphoreContext, context.CancelFunc) {
+	ctx, cancel := context.WithDeadline(parent, time.Now().Add(tm))
 	return &SemaphoreContext{
 		Context:    ctx,
 		cancelFunc: cancel,
@@ -35,6 +35,23 @@ func (s *SemaphoreContext) CancelWithError(err error) {
 	s.cancelFunc()
 }
 
+// Done 实现 context.Context 的 Done 方法，返回信号量的通道
+func (s *SemaphoreContext) Done() <-chan struct{} {
+	return s.Context.Done()
+}
+
+// Value 实现 context.Context 的 Value 方法，返回自定义值
+func (s *SemaphoreContext) Value(key any) any {
+	return s.Context.Value(key)
+}
+
+// Cancel 实现 context.Context 的 Cancel 方法，取消信号量
+func (s *SemaphoreContext) Cancel() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.cancelFunc()
+}
+
 // Err 实现 context.Context 的 Err 方法，返回自定义错误
 func (s *SemaphoreContext) Err() error {
 	s.mu.Lock()
@@ -45,10 +62,15 @@ func (s *SemaphoreContext) Err() error {
 	return s.Context.Err()
 }
 
+// Deadline 实现 context.Context 的 Deadline 方法，返回超时时间
+func (s *SemaphoreContext) Deadline() (deadline time.Time, ok bool) {
+	return s.Context.Deadline()
+}
+
 // 示例函数，演示信号量的使用
 func worker(ctx *SemaphoreContext, id int) {
 	select {
-	case <-time.After(2 * time.Second):
+	case <-time.After(5 * time.Second):
 		fmt.Printf("Worker %d finished work\n", id)
 	case <-ctx.Done():
 		fmt.Printf("Worker %d canceled: %v\n", id, ctx.Err())
@@ -63,7 +85,7 @@ func main() {
 		return
 	}
 	parent := context.Background()
-	semaphoreCtx, cancel := NewSemaphoreContext(parent)
+	semaphoreCtx, cancel := NewSemaphoreContext(parent, 3*time.Second)
 
 	var wg sync.WaitGroup
 	for i := 1; i <= 3; i++ {
