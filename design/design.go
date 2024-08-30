@@ -67,4 +67,26 @@ var _ = Service("calc", func() {
 			Response("DivByZero", CodeInvalidArgument)
 		})
 	})
+
+	Method("update", func() {
+		Description("Change account name")
+		Payload(UpdateAccount)
+		Result(UpdateAccountResult)
+		Error("NotFound")
+		Error("BadRequest")
+
+		HTTP(func() {
+			PUT("/update")
+			// The HTTP status code for responses corresponding to
+			// the "DivByZero" error is 400 Bad Request.
+			// The default response for successful requests is
+			// 200 OK.
+			Response("NotFound", StatusBadRequest)
+		})
+		// gRPC transport
+		GRPC(func() {
+			Response("NotFound", CodeNotFound)
+			Response("BadRequest", CodeInvalidArgument)
+		})
+	})
 })

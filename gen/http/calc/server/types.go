@@ -8,9 +8,28 @@
 package server
 
 import (
+	"unicode/utf8"
+
 	calc "github.com/cham/elk/gen/calc"
+	calcviews "github.com/cham/elk/gen/calc/views"
 	goa "goa.design/goa/v3/pkg"
 )
+
+// UpdateRequestBody is the type of the "calc" service "update" endpoint HTTP
+// request body.
+type UpdateRequestBody struct {
+	Name  *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+}
+
+// UpdateResponseBody is the type of the "calc" service "update" endpoint HTTP
+// response body.
+type UpdateResponseBody struct {
+	// Name of the created resource
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// Href of the created resource
+	Href *string `form:"href,omitempty" json:"href,omitempty" xml:"href,omitempty"`
+}
 
 // DivideDivByZeroResponseBody is the type of the "calc" service "divide"
 // endpoint HTTP response body for the "DivByZero" error.
@@ -30,10 +49,52 @@ type DivideDivByZeroResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// UpdateNotFoundResponseBody is the type of the "calc" service "update"
+// endpoint HTTP response body for the "NotFound" error.
+type UpdateNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// NewUpdateResponseBody builds the HTTP response body from the result of the
+// "update" endpoint of the "calc" service.
+func NewUpdateResponseBody(res *calcviews.CreateView) *UpdateResponseBody {
+	body := &UpdateResponseBody{
+		Name: res.Name,
+		Href: res.Href,
+	}
+	return body
+}
+
 // NewDivideDivByZeroResponseBody builds the HTTP response body from the result
 // of the "divide" endpoint of the "calc" service.
 func NewDivideDivByZeroResponseBody(res *goa.ServiceError) *DivideDivByZeroResponseBody {
 	body := &DivideDivByZeroResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateNotFoundResponseBody builds the HTTP response body from the result
+// of the "update" endpoint of the "calc" service.
+func NewUpdateNotFoundResponseBody(res *goa.ServiceError) *UpdateNotFoundResponseBody {
+	body := &UpdateNotFoundResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -60,4 +121,38 @@ func NewDividePayload(c2 int, d int) *calc.DividePayload {
 	v.D = d
 
 	return v
+}
+
+// NewUpdateAccount builds a calc service update endpoint payload.
+func NewUpdateAccount(body *UpdateRequestBody) *calc.UpdateAccount {
+	v := &calc.UpdateAccount{
+		Name:  *body.Name,
+		Email: *body.Email,
+	}
+
+	return v
+}
+
+// ValidateUpdateRequestBody runs the validations defined on UpdateRequestBody
+func ValidateUpdateRequestBody(body *UpdateRequestBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.Name != nil {
+		if utf8.RuneCountInString(*body.Name) < 3 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", *body.Name, utf8.RuneCountInString(*body.Name), 3, true))
+		}
+	}
+	if body.Name != nil {
+		if utf8.RuneCountInString(*body.Name) > 20 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", *body.Name, utf8.RuneCountInString(*body.Name), 20, false))
+		}
+	}
+	if body.Email != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.email", *body.Email, goa.FormatEmail))
+	}
+	return
 }

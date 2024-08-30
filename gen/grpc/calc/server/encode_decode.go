@@ -11,6 +11,7 @@ import (
 	"context"
 
 	calc "github.com/cham/elk/gen/calc"
+	calcviews "github.com/cham/elk/gen/calc/views"
 	calcpb "github.com/cham/elk/gen/grpc/calc/pb"
 	goagrpc "goa.design/goa/v3/grpc"
 	"google.golang.org/grpc/metadata"
@@ -72,6 +73,41 @@ func DecodeDivideRequest(ctx context.Context, v any, md metadata.MD) (any, error
 	var payload *calc.DividePayload
 	{
 		payload = NewDividePayload(message)
+	}
+	return payload, nil
+}
+
+// EncodeUpdateResponse encodes responses from the "calc" service "update"
+// endpoint.
+func EncodeUpdateResponse(ctx context.Context, v any, hdr, trlr *metadata.MD) (any, error) {
+	vres, ok := v.(*calcviews.Create)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("calc", "update", "*calcviews.Create", v)
+	}
+	result := vres.Projected
+	(*hdr).Append("goa-view", vres.View)
+	resp := NewProtoUpdateResponse(result)
+	return resp, nil
+}
+
+// DecodeUpdateRequest decodes requests sent to "calc" service "update"
+// endpoint.
+func DecodeUpdateRequest(ctx context.Context, v any, md metadata.MD) (any, error) {
+	var (
+		message *calcpb.UpdateRequest
+		ok      bool
+	)
+	{
+		if message, ok = v.(*calcpb.UpdateRequest); !ok {
+			return nil, goagrpc.ErrInvalidType("calc", "update", "*calcpb.UpdateRequest", v)
+		}
+		if err := ValidateUpdateRequest(message); err != nil {
+			return nil, err
+		}
+	}
+	var payload *calc.UpdateAccount
+	{
+		payload = NewUpdatePayload(message)
 	}
 	return payload, nil
 }

@@ -28,6 +28,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Calc_Multiply_FullMethodName = "/calc.Calc/Multiply"
 	Calc_Divide_FullMethodName   = "/calc.Calc/Divide"
+	Calc_Update_FullMethodName   = "/calc.Calc/Update"
 )
 
 // CalcClient is the client API for Calc service.
@@ -40,6 +41,8 @@ type CalcClient interface {
 	Multiply(ctx context.Context, in *MultiplyRequest, opts ...grpc.CallOption) (*MultiplyResponse, error)
 	// Divide returns the integral division of two integers.
 	Divide(ctx context.Context, in *DivideRequest, opts ...grpc.CallOption) (*DivideResponse, error)
+	// Change account name
+	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 }
 
 type calcClient struct {
@@ -70,6 +73,16 @@ func (c *calcClient) Divide(ctx context.Context, in *DivideRequest, opts ...grpc
 	return out, nil
 }
 
+func (c *calcClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateResponse)
+	err := c.cc.Invoke(ctx, Calc_Update_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CalcServer is the server API for Calc service.
 // All implementations must embed UnimplementedCalcServer
 // for forward compatibility.
@@ -80,6 +93,8 @@ type CalcServer interface {
 	Multiply(context.Context, *MultiplyRequest) (*MultiplyResponse, error)
 	// Divide returns the integral division of two integers.
 	Divide(context.Context, *DivideRequest) (*DivideResponse, error)
+	// Change account name
+	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	mustEmbedUnimplementedCalcServer()
 }
 
@@ -95,6 +110,9 @@ func (UnimplementedCalcServer) Multiply(context.Context, *MultiplyRequest) (*Mul
 }
 func (UnimplementedCalcServer) Divide(context.Context, *DivideRequest) (*DivideResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Divide not implemented")
+}
+func (UnimplementedCalcServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedCalcServer) mustEmbedUnimplementedCalcServer() {}
 func (UnimplementedCalcServer) testEmbeddedByValue()              {}
@@ -153,6 +171,24 @@ func _Calc_Divide_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Calc_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalcServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Calc_Update_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalcServer).Update(ctx, req.(*UpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Calc_ServiceDesc is the grpc.ServiceDesc for Calc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -167,6 +203,10 @@ var Calc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Divide",
 			Handler:    _Calc_Divide_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _Calc_Update_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

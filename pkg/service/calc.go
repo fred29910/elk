@@ -12,6 +12,18 @@ import (
 // The example methods log the requests and return zero values.
 type calcsrvc struct{}
 
+// Update implements calc.Service.
+func (s *calcsrvc) Update(ctx context.Context, req *calc.UpdateAccount) (res *calc.Create, err error) {
+
+	log.Debugf(ctx, "calc.update %#v", req)
+
+	res = &calc.Create{
+		Name: &req.Name,
+		Href: &req.Email,
+	}
+	return
+}
+
 // Divide implements calc.Service.
 func (s *calcsrvc) Divide(ctx context.Context, req *calc.DividePayload) (res int, err error) {
 

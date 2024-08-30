@@ -9,6 +9,7 @@ package client
 
 import (
 	calc "github.com/cham/elk/gen/calc"
+	calcviews "github.com/cham/elk/gen/calc/views"
 	calcpb "github.com/cham/elk/gen/grpc/calc/pb"
 )
 
@@ -43,5 +44,25 @@ func NewProtoDivideRequest(payload *calc.DividePayload) *calcpb.DivideRequest {
 // "calc" service from the gRPC response type.
 func NewDivideResult(message *calcpb.DivideResponse) int {
 	result := int(message.Field)
+	return result
+}
+
+// NewProtoUpdateRequest builds the gRPC request type from the payload of the
+// "update" endpoint of the "calc" service.
+func NewProtoUpdateRequest(payload *calc.UpdateAccount) *calcpb.UpdateRequest {
+	message := &calcpb.UpdateRequest{
+		Name:  payload.Name,
+		Email: payload.Email,
+	}
+	return message
+}
+
+// NewUpdateResult builds the result type of the "update" endpoint of the
+// "calc" service from the gRPC response type.
+func NewUpdateResult(message *calcpb.UpdateResponse) *calcviews.CreateView {
+	result := &calcviews.CreateView{
+		Name: message.Name,
+		Href: message.Href,
+	}
 	return result
 }

@@ -24,6 +24,9 @@ type Client struct {
 	// Divide Doer is the HTTP client used to make requests to the divide endpoint.
 	DivideDoer goahttp.Doer
 
+	// Update Doer is the HTTP client used to make requests to the update endpoint.
+	UpdateDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -46,6 +49,7 @@ func NewClient(
 	return &Client{
 		MultiplyDoer:        doer,
 		DivideDoer:          doer,
+		UpdateDoer:          doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -87,6 +91,30 @@ func (c *Client) Divide() goa.Endpoint {
 		resp, err := c.DivideDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("calc", "divide", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// Update returns an endpoint that makes HTTP requests to the calc service
+// update server.
+func (c *Client) Update() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeUpdateRequest(c.encoder)
+		decodeResponse = DecodeUpdateResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v any) (any, error) {
+		req, err := c.BuildUpdateRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.UpdateDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("calc", "update", err)
 		}
 		return decodeResponse(resp)
 	}

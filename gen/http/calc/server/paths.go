@@ -20,3 +20,8 @@ func MultiplyCalcPath(a int, b int) string {
 func DivideCalcPath(c2 int, d int) string {
 	return fmt.Sprintf("/div/%v/%v", c2, d)
 }
+
+// UpdateCalcPath returns the URL path to the calc service update HTTP endpoint.
+func UpdateCalcPath() string {
+	return "/update"
+}

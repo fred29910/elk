@@ -8,8 +8,12 @@
 package server
 
 import (
+	"unicode/utf8"
+
 	calc "github.com/cham/elk/gen/calc"
+	calcviews "github.com/cham/elk/gen/calc/views"
 	calcpb "github.com/cham/elk/gen/grpc/calc/pb"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // NewMultiplyPayload builds the payload of the "multiply" endpoint of the
@@ -46,4 +50,36 @@ func NewProtoDivideResponse(result int) *calcpb.DivideResponse {
 	message := &calcpb.DivideResponse{}
 	message.Field = int32(result)
 	return message
+}
+
+// NewUpdatePayload builds the payload of the "update" endpoint of the "calc"
+// service from the gRPC request type.
+func NewUpdatePayload(message *calcpb.UpdateRequest) *calc.UpdateAccount {
+	v := &calc.UpdateAccount{
+		Name:  message.Name,
+		Email: message.Email,
+	}
+	return v
+}
+
+// NewProtoUpdateResponse builds the gRPC response type from the result of the
+// "update" endpoint of the "calc" service.
+func NewProtoUpdateResponse(result *calcviews.CreateView) *calcpb.UpdateResponse {
+	message := &calcpb.UpdateResponse{
+		Name: result.Name,
+		Href: result.Href,
+	}
+	return message
+}
+
+// ValidateUpdateRequest runs the validations defined on UpdateRequest.
+func ValidateUpdateRequest(message *calcpb.UpdateRequest) (err error) {
+	if utf8.RuneCountInString(message.Name) < 3 {
+		err = goa.MergeErrors(err, goa.InvalidLengthError("message.name", message.Name, utf8.RuneCountInString(message.Name), 3, true))
+	}
+	if utf8.RuneCountInString(message.Name) > 20 {
+		err = goa.MergeErrors(err, goa.InvalidLengthError("message.name", message.Name, utf8.RuneCountInString(message.Name), 20, false))
+	}
+	err = goa.MergeErrors(err, goa.ValidateFormat("message.email", message.Email, goa.FormatEmail))
+	return
 }

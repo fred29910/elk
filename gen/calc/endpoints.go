@@ -17,6 +17,7 @@ import (
 type Endpoints struct {
 	Multiply goa.Endpoint
 	Divide   goa.Endpoint
+	Update   goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "calc" service with endpoints.
@@ -24,6 +25,7 @@ func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
 		Multiply: NewMultiplyEndpoint(s),
 		Divide:   NewDivideEndpoint(s),
+		Update:   NewUpdateEndpoint(s),
 	}
 }
 
@@ -31,6 +33,7 @@ func NewEndpoints(s Service) *Endpoints {
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.Multiply = m(e.Multiply)
 	e.Divide = m(e.Divide)
+	e.Update = m(e.Update)
 }
 
 // NewMultiplyEndpoint returns an endpoint function that calls the method
@@ -48,5 +51,19 @@ func NewDivideEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req any) (any, error) {
 		p := req.(*DividePayload)
 		return s.Divide(ctx, p)
+	}
+}
+
+// NewUpdateEndpoint returns an endpoint function that calls the method
+// "update" of service "calc".
+func NewUpdateEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req any) (any, error) {
+		p := req.(*UpdateAccount)
+		res, err := s.Update(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedCreate(res, "default")
+		return vres, nil
 	}
 }

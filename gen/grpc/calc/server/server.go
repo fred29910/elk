@@ -22,6 +22,7 @@ import (
 type Server struct {
 	MultiplyH goagrpc.UnaryHandler
 	DivideH   goagrpc.UnaryHandler
+	UpdateH   goagrpc.UnaryHandler
 	calcpb.UnimplementedCalcServer
 }
 
@@ -30,6 +31,7 @@ func New(e *calc.Endpoints, uh goagrpc.UnaryHandler) *Server {
 	return &Server{
 		MultiplyH: NewMultiplyHandler(e.Multiply, uh),
 		DivideH:   NewDivideHandler(e.Divide, uh),
+		UpdateH:   NewUpdateHandler(e.Update, uh),
 	}
 }
 
@@ -78,4 +80,33 @@ func (s *Server) Divide(ctx context.Context, message *calcpb.DivideRequest) (*ca
 		return nil, goagrpc.EncodeError(err)
 	}
 	return resp.(*calcpb.DivideResponse), nil
+}
+
+// NewUpdateHandler creates a gRPC handler which serves the "calc" service
+// "update" endpoint.
+func NewUpdateHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
+	if h == nil {
+		h = goagrpc.NewUnaryHandler(endpoint, DecodeUpdateRequest, EncodeUpdateResponse)
+	}
+	return h
+}
+
+// Update implements the "Update" method in calcpb.CalcServer interface.
+func (s *Server) Update(ctx context.Context, message *calcpb.UpdateRequest) (*calcpb.UpdateResponse, error) {
+	ctx = context.WithValue(ctx, goa.MethodKey, "update")
+	ctx = context.WithValue(ctx, goa.ServiceKey, "calc")
+	resp, err := s.UpdateH.Handle(ctx, message)
+	if err != nil {
+		var en goa.GoaErrorNamer
+		if errors.As(err, &en) {
+			switch en.GoaErrorName() {
+			case "NotFound":
+				return nil, goagrpc.NewStatusError(codes.NotFound, err, goagrpc.NewErrorResponse(err))
+			case "BadRequest":
+				return nil, goagrpc.NewStatusError(codes.InvalidArgument, err, goagrpc.NewErrorResponse(err))
+			}
+		}
+		return nil, goagrpc.EncodeError(err)
+	}
+	return resp.(*calcpb.UpdateResponse), nil
 }

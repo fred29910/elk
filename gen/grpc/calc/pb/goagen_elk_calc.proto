@@ -17,6 +17,8 @@ service Calc {
 	rpc Multiply (MultiplyRequest) returns (MultiplyResponse);
 	// Divide returns the integral division of two integers.
 	rpc Divide (DivideRequest) returns (DivideResponse);
+	// Change account name
+	rpc Update (UpdateRequest) returns (UpdateResponse);
 }
 
 message MultiplyRequest {
@@ -39,4 +41,16 @@ message DivideRequest {
 
 message DivideResponse {
 	sint32 field = 1;
+}
+
+message UpdateRequest {
+	string name = 1;
+	string email = 2;
+}
+
+message UpdateResponse {
+	// Name of the created resource
+	optional string name = 1;
+	// Href of the created resource
+	optional string href = 2;
 }

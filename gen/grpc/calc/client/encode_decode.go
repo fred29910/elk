@@ -11,6 +11,7 @@ import (
 	"context"
 
 	calc "github.com/cham/elk/gen/calc"
+	calcviews "github.com/cham/elk/gen/calc/views"
 	calcpb "github.com/cham/elk/gen/grpc/calc/pb"
 	goagrpc "goa.design/goa/v3/grpc"
 	"google.golang.org/grpc"
@@ -79,4 +80,45 @@ func DecodeDivideResponse(ctx context.Context, v any, hdr, trlr metadata.MD) (an
 	}
 	res := NewDivideResult(message)
 	return res, nil
+} // BuildUpdateFunc builds the remote method to invoke for "calc" service
+// "update" endpoint.
+func BuildUpdateFunc(grpccli calcpb.CalcClient, cliopts ...grpc.CallOption) goagrpc.RemoteFunc {
+	return func(ctx context.Context, reqpb any, opts ...grpc.CallOption) (any, error) {
+		for _, opt := range cliopts {
+			opts = append(opts, opt)
+		}
+		if reqpb != nil {
+			return grpccli.Update(ctx, reqpb.(*calcpb.UpdateRequest), opts...)
+		}
+		return grpccli.Update(ctx, &calcpb.UpdateRequest{}, opts...)
+	}
+}
+
+// EncodeUpdateRequest encodes requests sent to calc update endpoint.
+func EncodeUpdateRequest(ctx context.Context, v any, md *metadata.MD) (any, error) {
+	payload, ok := v.(*calc.UpdateAccount)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("calc", "update", "*calc.UpdateAccount", v)
+	}
+	return NewProtoUpdateRequest(payload), nil
+}
+
+// DecodeUpdateResponse decodes responses from the calc update endpoint.
+func DecodeUpdateResponse(ctx context.Context, v any, hdr, trlr metadata.MD) (any, error) {
+	var view string
+	{
+		if vals := hdr.Get("goa-view"); len(vals) > 0 {
+			view = vals[0]
+		}
+	}
+	message, ok := v.(*calcpb.UpdateResponse)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("calc", "update", "*calcpb.UpdateResponse", v)
+	}
+	res := NewUpdateResult(message)
+	vres := &calcviews.Create{Projected: res, View: view}
+	if err := calcviews.ValidateCreate(vres); err != nil {
+		return nil, err
+	}
+	return calc.NewCreate(vres), nil
 }

@@ -24,7 +24,7 @@ func BuildMultiplyPayload(calcMultiplyMessage string) (*calc.MultiplyPayload, er
 		if calcMultiplyMessage != "" {
 			err = json.Unmarshal([]byte(calcMultiplyMessage), &message)
 			if err != nil {
-				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"a\": 5308928064408640979,\n      \"b\": 1016925590796087323\n   }'")
+				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"a\": 4314332435229421191,\n      \"b\": 4786958422090245621\n   }'")
 			}
 		}
 	}
@@ -45,13 +45,34 @@ func BuildDividePayload(calcDivideMessage string) (*calc.DividePayload, error) {
 		if calcDivideMessage != "" {
 			err = json.Unmarshal([]byte(calcDivideMessage), &message)
 			if err != nil {
-				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"c\": 1228682945796019344,\n      \"d\": 4886963557863946648\n   }'")
+				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"c\": 5933435596807726301,\n      \"d\": 4632090751977078999\n   }'")
 			}
 		}
 	}
 	v := &calc.DividePayload{
 		C: int(message.C),
 		D: int(message.D),
+	}
+
+	return v, nil
+}
+
+// BuildUpdatePayload builds the payload for the calc update endpoint from CLI
+// flags.
+func BuildUpdatePayload(calcUpdateMessage string) (*calc.UpdateAccount, error) {
+	var err error
+	var message calcpb.UpdateRequest
+	{
+		if calcUpdateMessage != "" {
+			err = json.Unmarshal([]byte(calcUpdateMessage), &message)
+			if err != nil {
+				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"email\": \"allen.langworth@kertzmannkeebler.net\",\n      \"name\": \"uug\"\n   }'")
+			}
+		}
+	}
+	v := &calc.UpdateAccount{
+		Name:  message.Name,
+		Email: message.Email,
 	}
 
 	return v, nil

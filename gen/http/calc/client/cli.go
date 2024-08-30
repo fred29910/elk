@@ -8,10 +8,13 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
+	"unicode/utf8"
 
 	calc "github.com/cham/elk/gen/calc"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildMultiplyPayload builds the payload for the calc multiply endpoint from
@@ -68,6 +71,35 @@ func BuildDividePayload(calcDivideC2 string, calcDivideD string) (*calc.DividePa
 	v := &calc.DividePayload{}
 	v.C = c2
 	v.D = d
+
+	return v, nil
+}
+
+// BuildUpdatePayload builds the payload for the calc update endpoint from CLI
+// flags.
+func BuildUpdatePayload(calcUpdateBody string) (*calc.UpdateAccount, error) {
+	var err error
+	var body UpdateRequestBody
+	{
+		err = json.Unmarshal([]byte(calcUpdateBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"email\": \"darwin.hoeger@boganbeier.net\",\n      \"name\": \"9vf\"\n   }'")
+		}
+		if utf8.RuneCountInString(body.Name) < 3 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", body.Name, utf8.RuneCountInString(body.Name), 3, true))
+		}
+		if utf8.RuneCountInString(body.Name) > 20 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", body.Name, utf8.RuneCountInString(body.Name), 20, false))
+		}
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.email", body.Email, goa.FormatEmail))
+		if err != nil {
+			return nil, err
+		}
+	}
+	v := &calc.UpdateAccount{
+		Name:  body.Name,
+		Email: body.Email,
+	}
 
 	return v, nil
 }

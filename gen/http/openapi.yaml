@@ -68,8 +68,78 @@ paths:
                         format: int64
             schemes:
                 - http
+    /update:
+        put:
+            tags:
+                - calc
+            summary: update calc
+            description: Change account name
+            operationId: calc#update
+            parameters:
+                - name: UpdateRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/CalcUpdateRequestBody'
+                    required:
+                        - name
+                        - email
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/CalcUpdateResponseBody'
+                "400":
+                    description: Bad Request response.
+                    schema:
+                        $ref: '#/definitions/CalcUpdateNotFoundResponseBody'
+            schemes:
+                - http
 definitions:
     CalcDivideDivByZeroResponseBody:
+        title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+        type: object
+        properties:
+            fault:
+                type: boolean
+                description: Is the error a server-side fault?
+                example: true
+            id:
+                type: string
+                description: ID is a unique identifier for this particular occurrence of the problem.
+                example: 123abc
+            message:
+                type: string
+                description: Message is a human-readable explanation specific to this occurrence of the problem.
+                example: parameter 'p' must be an integer
+            name:
+                type: string
+                description: Name is the name of this class of errors.
+                example: bad_request
+            temporary:
+                type: boolean
+                description: Is the error temporary?
+                example: true
+            timeout:
+                type: boolean
+                description: Is the error a timeout?
+                example: true
+        description: divide_DivByZero_response_body result type (default view)
+        example:
+            fault: true
+            id: 123abc
+            message: parameter 'p' must be an integer
+            name: bad_request
+            temporary: true
+            timeout: true
+        required:
+            - name
+            - id
+            - message
+            - temporary
+            - timeout
+            - fault
+    CalcUpdateNotFoundResponseBody:
         title: 'Mediatype identifier: application/vnd.goa.error; view=default'
         type: object
         properties:
@@ -92,19 +162,19 @@ definitions:
             temporary:
                 type: boolean
                 description: Is the error temporary?
-                example: false
+                example: true
             timeout:
                 type: boolean
                 description: Is the error a timeout?
                 example: true
-        description: divide_DivByZero_response_body result type (default view)
+        description: update_NotFound_response_body result type (default view)
         example:
             fault: false
             id: 123abc
             message: parameter 'p' must be an integer
             name: bad_request
-            temporary: false
-            timeout: false
+            temporary: true
+            timeout: true
         required:
             - name
             - id
@@ -112,3 +182,38 @@ definitions:
             - temporary
             - timeout
             - fault
+    CalcUpdateRequestBody:
+        title: CalcUpdateRequestBody
+        type: object
+        properties:
+            email:
+                type: string
+                example: kaleb.quitzon@ortizboyer.info
+                format: email
+            name:
+                type: string
+                example: m5h
+                minLength: 3
+                maxLength: 20
+        example:
+            email: alejandrin@bradtke.info
+            name: u7e
+        required:
+            - name
+            - email
+    CalcUpdateResponseBody:
+        title: 'Mediatype identifier: application/vnd.create; view=default'
+        type: object
+        properties:
+            href:
+                type: string
+                description: Href of the created resource
+                example: Dolore qui consequuntur qui dolor.
+            name:
+                type: string
+                description: Name of the created resource
+                example: Omnis dolores accusantium doloribus qui.
+        description: UpdateResponseBody result type (default view)
+        example:
+            href: Dolores voluptas suscipit ut rerum odio.
+            name: Ipsum nostrum cumque deserunt labore hic rerum.

@@ -15,6 +15,7 @@ import (
 	"net/url"
 
 	calc "github.com/cham/elk/gen/calc"
+	calcviews "github.com/cham/elk/gen/calc/views"
 	goahttp "goa.design/goa/v3/http"
 )
 
@@ -155,6 +156,96 @@ func DecodeDivideResponse(decoder func(*http.Response) goahttp.Decoder, restoreB
 		default:
 			body, _ := io.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("calc", "divide", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildUpdateRequest instantiates a HTTP request object with method and path
+// set to call the "calc" service "update" endpoint
+func (c *Client) BuildUpdateRequest(ctx context.Context, v any) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateCalcPath()}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("calc", "update", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeUpdateRequest returns an encoder for requests sent to the calc update
+// server.
+func EncodeUpdateRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, any) error {
+	return func(req *http.Request, v any) error {
+		p, ok := v.(*calc.UpdateAccount)
+		if !ok {
+			return goahttp.ErrInvalidType("calc", "update", "*calc.UpdateAccount", v)
+		}
+		body := NewUpdateRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("calc", "update", err)
+		}
+		return nil
+	}
+}
+
+// DecodeUpdateResponse returns a decoder for responses returned by the calc
+// update endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+// DecodeUpdateResponse may return the following errors:
+//   - "NotFound" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeUpdateResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body UpdateResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("calc", "update", err)
+			}
+			p := NewUpdateCreateOK(&body)
+			view := "default"
+			vres := &calcviews.Create{Projected: p, View: view}
+			if err = calcviews.ValidateCreate(vres); err != nil {
+				return nil, goahttp.ErrValidationError("calc", "update", err)
+			}
+			res := calc.NewCreate(vres)
+			return res, nil
+		case http.StatusBadRequest:
+			var (
+				body UpdateNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("calc", "update", err)
+			}
+			err = ValidateUpdateNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("calc", "update", err)
+			}
+			return nil, NewUpdateNotFound(&body)
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("calc", "update", resp.StatusCode, string(body))
 		}
 	}
 }

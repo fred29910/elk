@@ -14,6 +14,16 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  Create,
+  UpdateRequestBody,
+} from '../models/index';
+import {
+    CreateFromJSON,
+    CreateToJSON,
+    UpdateRequestBodyFromJSON,
+    UpdateRequestBodyToJSON,
+} from '../models/index';
 
 export interface CalcDivideRequest {
     c: number;
@@ -23,6 +33,10 @@ export interface CalcDivideRequest {
 export interface CalcMultiplyRequest {
     a: number;
     b: number;
+}
+
+export interface CalcUpdateRequest {
+    updateRequestBody: UpdateRequestBody;
 }
 
 /**
@@ -117,6 +131,44 @@ export class CalcApi extends runtime.BaseAPI {
      */
     async calcMultiply(requestParameters: CalcMultiplyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
         const response = await this.calcMultiplyRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Change account name
+     * update calc
+     */
+    async calcUpdateRaw(requestParameters: CalcUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Create>> {
+        if (requestParameters['updateRequestBody'] == null) {
+            throw new runtime.RequiredError(
+                'updateRequestBody',
+                'Required parameter "updateRequestBody" was null or undefined when calling calcUpdate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/update`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateRequestBodyToJSON(requestParameters['updateRequestBody']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreateFromJSON(jsonValue));
+    }
+
+    /**
+     * Change account name
+     * update calc
+     */
+    async calcUpdate(requestParameters: CalcUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Create> {
+        const response = await this.calcUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

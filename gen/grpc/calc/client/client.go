@@ -59,4 +59,23 @@ func (c *Client) Divide() goa.Endpoint {
 		}
 		return res, nil
 	}
+} // Update calls the "Update" function in calcpb.CalcClient interface.
+func (c *Client) Update() goa.Endpoint {
+	return func(ctx context.Context, v any) (any, error) {
+		inv := goagrpc.NewInvoker(
+			BuildUpdateFunc(c.grpccli, c.opts...),
+			EncodeUpdateRequest,
+			DecodeUpdateResponse)
+		res, err := inv.Invoke(ctx, v)
+		if err != nil {
+			resp := goagrpc.DecodeError(err)
+			switch message := resp.(type) {
+			case *goapb.ErrorResponse:
+				return nil, goagrpc.NewServiceError(message)
+			default:
+				return nil, goa.Fault(err.Error())
+			}
+		}
+		return res, nil
+	}
 }

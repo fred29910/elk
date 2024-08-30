@@ -17,13 +17,15 @@ import (
 type Client struct {
 	MultiplyEndpoint goa.Endpoint
 	DivideEndpoint   goa.Endpoint
+	UpdateEndpoint   goa.Endpoint
 }
 
 // NewClient initializes a "calc" service client given the endpoints.
-func NewClient(multiply, divide goa.Endpoint) *Client {
+func NewClient(multiply, divide, update goa.Endpoint) *Client {
 	return &Client{
 		MultiplyEndpoint: multiply,
 		DivideEndpoint:   divide,
+		UpdateEndpoint:   update,
 	}
 }
 
@@ -48,4 +50,18 @@ func (c *Client) Divide(ctx context.Context, p *DividePayload) (res int, err err
 		return
 	}
 	return ires.(int), nil
+}
+
+// Update calls the "update" endpoint of the "calc" service.
+// Update may return the following errors:
+//   - "NotFound" (type *goa.ServiceError)
+//   - "BadRequest" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) Update(ctx context.Context, p *UpdateAccount) (res *Create, err error) {
+	var ires any
+	ires, err = c.UpdateEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*Create), nil
 }
