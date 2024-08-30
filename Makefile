@@ -5,4 +5,5 @@ build:
 .PHONY: gendesign
 gendesign:
 	goa gen github.com/cham/elk/design
-	goa example github.com/cham/elk/design
+	goa example github.com/cham/elk/design  -o pkg/servicex/
+	cd web/ui && yarn genapi
