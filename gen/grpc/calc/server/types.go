@@ -29,3 +29,21 @@ func NewProtoMultiplyResponse(result int) *calcpb.MultiplyResponse {
 	message.Field = int32(result)
 	return message
 }
+
+// NewDividePayload builds the payload of the "divide" endpoint of the "calc"
+// service from the gRPC request type.
+func NewDividePayload(message *calcpb.DivideRequest) *calc.DividePayload {
+	v := &calc.DividePayload{
+		C: int(message.C),
+		D: int(message.D),
+	}
+	return v
+}
+
+// NewProtoDivideResponse builds the gRPC response type from the result of the
+// "divide" endpoint of the "calc" service.
+func NewProtoDivideResponse(result int) *calcpb.DivideResponse {
+	message := &calcpb.DivideResponse{}
+	message.Field = int32(result)
+	return message
+}

@@ -15,6 +15,11 @@
 
 import * as runtime from '../runtime';
 
+export interface CalcDivideRequest {
+    c: number;
+    d: number;
+}
+
 export interface CalcMultiplyRequest {
     a: number;
     b: number;
@@ -24,6 +29,52 @@ export interface CalcMultiplyRequest {
  * 
  */
 export class CalcApi extends runtime.BaseAPI {
+
+    /**
+     * Divide returns the integral division of two integers.
+     * divide calc
+     */
+    async calcDivideRaw(requestParameters: CalcDivideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>> {
+        if (requestParameters['c'] == null) {
+            throw new runtime.RequiredError(
+                'c',
+                'Required parameter "c" was null or undefined when calling calcDivide().'
+            );
+        }
+
+        if (requestParameters['d'] == null) {
+            throw new runtime.RequiredError(
+                'd',
+                'Required parameter "d" was null or undefined when calling calcDivide().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/div/{c}/{d}`.replace(`{${"c"}}`, encodeURIComponent(String(requestParameters['c']))).replace(`{${"d"}}`, encodeURIComponent(String(requestParameters['d']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<number>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Divide returns the integral division of two integers.
+     * divide calc
+     */
+    async calcDivide(requestParameters: CalcDivideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
+        const response = await this.calcDivideRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * multiply calc

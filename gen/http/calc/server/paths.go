@@ -15,3 +15,8 @@ import (
 func MultiplyCalcPath(a int, b int) string {
 	return fmt.Sprintf("/multiply/%v/%v", a, b)
 }
+
+// DivideCalcPath returns the URL path to the calc service divide HTTP endpoint.
+func DivideCalcPath(c2 int, d int) string {
+	return fmt.Sprintf("/div/%v/%v", c2, d)
+}

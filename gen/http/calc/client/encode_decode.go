@@ -79,3 +79,82 @@ func DecodeMultiplyResponse(decoder func(*http.Response) goahttp.Decoder, restor
 		}
 	}
 }
+
+// BuildDivideRequest instantiates a HTTP request object with method and path
+// set to call the "calc" service "divide" endpoint
+func (c *Client) BuildDivideRequest(ctx context.Context, v any) (*http.Request, error) {
+	var (
+		c2 int
+		d  int
+	)
+	{
+		p, ok := v.(*calc.DividePayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("calc", "divide", "*calc.DividePayload", v)
+		}
+		c2 = p.C
+		d = p.D
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DivideCalcPath(c2, d)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("calc", "divide", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeDivideResponse returns a decoder for responses returned by the calc
+// divide endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+// DecodeDivideResponse may return the following errors:
+//   - "DivByZero" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeDivideResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body int
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("calc", "divide", err)
+			}
+			return body, nil
+		case http.StatusBadRequest:
+			var (
+				body DivideDivByZeroResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("calc", "divide", err)
+			}
+			err = ValidateDivideDivByZeroResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("calc", "divide", err)
+			}
+			return nil, NewDivideDivByZero(&body)
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("calc", "divide", resp.StatusCode, string(body))
+		}
+	}
+}

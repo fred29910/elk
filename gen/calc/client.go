@@ -16,12 +16,14 @@ import (
 // Client is the "calc" service client.
 type Client struct {
 	MultiplyEndpoint goa.Endpoint
+	DivideEndpoint   goa.Endpoint
 }
 
 // NewClient initializes a "calc" service client given the endpoints.
-func NewClient(multiply goa.Endpoint) *Client {
+func NewClient(multiply, divide goa.Endpoint) *Client {
 	return &Client{
 		MultiplyEndpoint: multiply,
+		DivideEndpoint:   divide,
 	}
 }
 
@@ -29,6 +31,19 @@ func NewClient(multiply goa.Endpoint) *Client {
 func (c *Client) Multiply(ctx context.Context, p *MultiplyPayload) (res int, err error) {
 	var ires any
 	ires, err = c.MultiplyEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(int), nil
+}
+
+// Divide calls the "divide" endpoint of the "calc" service.
+// Divide may return the following errors:
+//   - "DivByZero" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) Divide(ctx context.Context, p *DividePayload) (res int, err error) {
+	var ires any
+	ires, err = c.DivideEndpoint(ctx, p)
 	if err != nil {
 		return
 	}

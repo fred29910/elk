@@ -22,13 +22,13 @@ import (
 //
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
-	return `calc multiply
+	return `calc (multiply|divide)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` calc multiply --a 5952269320165453119 --b 1828520165265779840` + "\n" +
+	return os.Args[0] + ` calc multiply --a 3793862871819669726 --b 8399553735696626949` + "\n" +
 		""
 }
 
@@ -47,9 +47,14 @@ func ParseEndpoint(
 		calcMultiplyFlags = flag.NewFlagSet("multiply", flag.ExitOnError)
 		calcMultiplyAFlag = calcMultiplyFlags.String("a", "REQUIRED", "Left operand")
 		calcMultiplyBFlag = calcMultiplyFlags.String("b", "REQUIRED", "Right operand")
+
+		calcDivideFlags  = flag.NewFlagSet("divide", flag.ExitOnError)
+		calcDivideC2Flag = calcDivideFlags.String("c2", "REQUIRED", "Left operand")
+		calcDivideDFlag  = calcDivideFlags.String("d", "REQUIRED", "Right operand")
 	)
 	calcFlags.Usage = calcUsage
 	calcMultiplyFlags.Usage = calcMultiplyUsage
+	calcDivideFlags.Usage = calcDivideUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -88,6 +93,9 @@ func ParseEndpoint(
 			case "multiply":
 				epf = calcMultiplyFlags
 
+			case "divide":
+				epf = calcDivideFlags
+
 			}
 
 		}
@@ -116,6 +124,9 @@ func ParseEndpoint(
 			case "multiply":
 				endpoint = c.Multiply()
 				data, err = calcc.BuildMultiplyPayload(*calcMultiplyAFlag, *calcMultiplyBFlag)
+			case "divide":
+				endpoint = c.Divide()
+				data, err = calcc.BuildDividePayload(*calcDivideC2Flag, *calcDivideDFlag)
 			}
 		}
 	}
@@ -134,6 +145,7 @@ Usage:
 
 COMMAND:
     multiply: Multiply implements multiply.
+    divide: Divide returns the integral division of two integers.
 
 Additional help:
     %[1]s calc COMMAND --help
@@ -147,6 +159,18 @@ Multiply implements multiply.
     -b INT: Right operand
 
 Example:
-    %[1]s calc multiply --a 5952269320165453119 --b 1828520165265779840
+    %[1]s calc multiply --a 3793862871819669726 --b 8399553735696626949
+`, os.Args[0])
+}
+
+func calcDivideUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] calc divide -c2 INT -d INT
+
+Divide returns the integral division of two integers.
+    -c2 INT: Left operand
+    -d INT: Right operand
+
+Example:
+    %[1]s calc divide --c2 5401762099778430809 --d 1918630006328122782
 `, os.Args[0])
 }

@@ -34,4 +34,37 @@ var _ = Service("calc", func() {
 		GRPC(func() {
 		})
 	})
+
+	Method("divide", func() {
+		Description("Divide returns the integral division of two integers.")
+		Payload(func() {
+			// Attribute("c", Int, "Left operand")
+			// Attribute("d", Int, "Right operand")
+
+			Field(1, "c", Int, "Left operand")
+			Field(2, "d", Int, "Right operand")
+			Required("c", "d")
+		})
+		Result(Int)
+
+		// Error defines an error result.
+		Error("DivByZero")
+
+		HTTP(func() {
+			GET("/div/{c}/{d}")
+			// The HTTP status code for responses corresponding to
+			// the "DivByZero" error is 400 Bad Request.
+			// The default response for successful requests is
+			// 200 OK.
+			Response("DivByZero", StatusBadRequest)
+		})
+
+		GRPC(func() {
+			// The gRPC code for results corresponding to the
+			// "DivByZero" error is 3 (INVALID_ARGUMENT).
+			// The default response for successful requests is
+			// 0 OK.
+			Response("DivByZero", CodeInvalidArgument)
+		})
+	})
 })

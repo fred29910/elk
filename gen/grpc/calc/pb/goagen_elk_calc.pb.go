@@ -131,6 +131,110 @@ func (x *MultiplyResponse) GetField() int32 {
 	return 0
 }
 
+type DivideRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Left operand
+	C int32 `protobuf:"zigzag32,1,opt,name=c,proto3" json:"c,omitempty"`
+	// Right operand
+	D int32 `protobuf:"zigzag32,2,opt,name=d,proto3" json:"d,omitempty"`
+}
+
+func (x *DivideRequest) Reset() {
+	*x = DivideRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goagen_elk_calc_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DivideRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DivideRequest) ProtoMessage() {}
+
+func (x *DivideRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_goagen_elk_calc_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DivideRequest.ProtoReflect.Descriptor instead.
+func (*DivideRequest) Descriptor() ([]byte, []int) {
+	return file_goagen_elk_calc_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DivideRequest) GetC() int32 {
+	if x != nil {
+		return x.C
+	}
+	return 0
+}
+
+func (x *DivideRequest) GetD() int32 {
+	if x != nil {
+		return x.D
+	}
+	return 0
+}
+
+type DivideResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Field int32 `protobuf:"zigzag32,1,opt,name=field,proto3" json:"field,omitempty"`
+}
+
+func (x *DivideResponse) Reset() {
+	*x = DivideResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goagen_elk_calc_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DivideResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DivideResponse) ProtoMessage() {}
+
+func (x *DivideResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_goagen_elk_calc_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DivideResponse.ProtoReflect.Descriptor instead.
+func (*DivideResponse) Descriptor() ([]byte, []int) {
+	return file_goagen_elk_calc_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DivideResponse) GetField() int32 {
+	if x != nil {
+		return x.Field
+	}
+	return 0
+}
+
 var File_goagen_elk_calc_proto protoreflect.FileDescriptor
 
 var file_goagen_elk_calc_proto_rawDesc = []byte{
@@ -141,12 +245,21 @@ var file_goagen_elk_calc_proto_rawDesc = []byte{
 	0x0a, 0x01, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x11, 0x52, 0x01, 0x62, 0x22, 0x28, 0x0a, 0x10,
 	0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x12, 0x14, 0x0a, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x11, 0x52,
-	0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x32, 0x41, 0x0a, 0x04, 0x43, 0x61, 0x6c, 0x63, 0x12, 0x39,
-	0x0a, 0x08, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x79, 0x12, 0x15, 0x2e, 0x63, 0x61, 0x6c,
-	0x63, 0x2e, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x16, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c,
-	0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x63, 0x61,
-	0x6c, 0x63, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x22, 0x2b, 0x0a, 0x0d, 0x44, 0x69, 0x76, 0x69, 0x64, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0c, 0x0a, 0x01, 0x63, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x11, 0x52, 0x01, 0x63, 0x12, 0x0c, 0x0a, 0x01, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x11,
+	0x52, 0x01, 0x64, 0x22, 0x26, 0x0a, 0x0e, 0x44, 0x69, 0x76, 0x69, 0x64, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x11, 0x52, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x32, 0x76, 0x0a, 0x04, 0x43,
+	0x61, 0x6c, 0x63, 0x12, 0x39, 0x0a, 0x08, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x79, 0x12,
+	0x15, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x79, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e, 0x4d, 0x75,
+	0x6c, 0x74, 0x69, 0x70, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33,
+	0x0a, 0x06, 0x44, 0x69, 0x76, 0x69, 0x64, 0x65, 0x12, 0x13, 0x2e, 0x63, 0x61, 0x6c, 0x63, 0x2e,
+	0x44, 0x69, 0x76, 0x69, 0x64, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e,
+	0x63, 0x61, 0x6c, 0x63, 0x2e, 0x44, 0x69, 0x76, 0x69, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x63, 0x61, 0x6c, 0x63, 0x70, 0x62, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -161,16 +274,20 @@ func file_goagen_elk_calc_proto_rawDescGZIP() []byte {
 	return file_goagen_elk_calc_proto_rawDescData
 }
 
-var file_goagen_elk_calc_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_goagen_elk_calc_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_goagen_elk_calc_proto_goTypes = []any{
 	(*MultiplyRequest)(nil),  // 0: calc.MultiplyRequest
 	(*MultiplyResponse)(nil), // 1: calc.MultiplyResponse
+	(*DivideRequest)(nil),    // 2: calc.DivideRequest
+	(*DivideResponse)(nil),   // 3: calc.DivideResponse
 }
 var file_goagen_elk_calc_proto_depIdxs = []int32{
 	0, // 0: calc.Calc.Multiply:input_type -> calc.MultiplyRequest
-	1, // 1: calc.Calc.Multiply:output_type -> calc.MultiplyResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: calc.Calc.Divide:input_type -> calc.DivideRequest
+	1, // 2: calc.Calc.Multiply:output_type -> calc.MultiplyResponse
+	3, // 3: calc.Calc.Divide:output_type -> calc.DivideResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -206,6 +323,30 @@ func file_goagen_elk_calc_proto_init() {
 				return nil
 			}
 		}
+		file_goagen_elk_calc_proto_msgTypes[2].Exporter = func(v any, i int) any {
+			switch v := v.(*DivideRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goagen_elk_calc_proto_msgTypes[3].Exporter = func(v any, i int) any {
+			switch v := v.(*DivideResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -213,7 +354,7 @@ func file_goagen_elk_calc_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_goagen_elk_calc_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

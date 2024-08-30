@@ -9,6 +9,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -61,5 +62,82 @@ func DecodeMultiplyRequest(mux goahttp.Muxer, decoder func(*http.Request) goahtt
 		payload := NewMultiplyPayload(a, b)
 
 		return payload, nil
+	}
+}
+
+// EncodeDivideResponse returns an encoder for responses returned by the calc
+// divide endpoint.
+func EncodeDivideResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
+	return func(ctx context.Context, w http.ResponseWriter, v any) error {
+		res, _ := v.(int)
+		enc := encoder(ctx, w)
+		body := res
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeDivideRequest returns a decoder for requests sent to the calc divide
+// endpoint.
+func DecodeDivideRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (any, error) {
+	return func(r *http.Request) (any, error) {
+		var (
+			c2  int
+			d   int
+			err error
+
+			params = mux.Vars(r)
+		)
+		{
+			c2Raw := params["c"]
+			v, err2 := strconv.ParseInt(c2Raw, 10, strconv.IntSize)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("c", c2Raw, "integer"))
+			}
+			c2 = int(v)
+		}
+		{
+			dRaw := params["d"]
+			v, err2 := strconv.ParseInt(dRaw, 10, strconv.IntSize)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("d", dRaw, "integer"))
+			}
+			d = int(v)
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewDividePayload(c2, d)
+
+		return payload, nil
+	}
+}
+
+// EncodeDivideError returns an encoder for errors returned by the divide calc
+// endpoint.
+func EncodeDivideError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(ctx context.Context, err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		var en goa.GoaErrorNamer
+		if !errors.As(v, &en) {
+			return encodeError(ctx, w, v)
+		}
+		switch en.GoaErrorName() {
+		case "DivByZero":
+			var res *goa.ServiceError
+			errors.As(v, &res)
+			enc := encoder(ctx, w)
+			var body any
+			if formatter != nil {
+				body = formatter(ctx, res)
+			} else {
+				body = NewDivideDivByZeroResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.GoaErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
 	}
 }

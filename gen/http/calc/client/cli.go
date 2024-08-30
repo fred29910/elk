@@ -42,3 +42,32 @@ func BuildMultiplyPayload(calcMultiplyA string, calcMultiplyB string) (*calc.Mul
 
 	return v, nil
 }
+
+// BuildDividePayload builds the payload for the calc divide endpoint from CLI
+// flags.
+func BuildDividePayload(calcDivideC2 string, calcDivideD string) (*calc.DividePayload, error) {
+	var err error
+	var c2 int
+	{
+		var v int64
+		v, err = strconv.ParseInt(calcDivideC2, 10, strconv.IntSize)
+		c2 = int(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value for c2, must be INT")
+		}
+	}
+	var d int
+	{
+		var v int64
+		v, err = strconv.ParseInt(calcDivideD, 10, strconv.IntSize)
+		d = int(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value for d, must be INT")
+		}
+	}
+	v := &calc.DividePayload{}
+	v.C = c2
+	v.D = d
+
+	return v, nil
+}

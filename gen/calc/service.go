@@ -9,12 +9,16 @@ package calc
 
 import (
 	"context"
+
+	goa "goa.design/goa/v3/pkg"
 )
 
 // The calc service performs operations on numbers.
 type Service interface {
 	// Multiply implements multiply.
 	Multiply(context.Context, *MultiplyPayload) (res int, err error)
+	// Divide returns the integral division of two integers.
+	Divide(context.Context, *DividePayload) (res int, err error)
 }
 
 // APIName is the name of the API as defined in the design.
@@ -31,7 +35,15 @@ const ServiceName = "calc"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [1]string{"multiply"}
+var MethodNames = [2]string{"multiply", "divide"}
+
+// DividePayload is the payload type of the calc service divide method.
+type DividePayload struct {
+	// Left operand
+	C int
+	// Right operand
+	D int
+}
 
 // MultiplyPayload is the payload type of the calc service multiply method.
 type MultiplyPayload struct {
@@ -39,4 +51,9 @@ type MultiplyPayload struct {
 	A int
 	// Right operand
 	B int
+}
+
+// MakeDivByZero builds a goa.ServiceError from an error.
+func MakeDivByZero(err error) *goa.ServiceError {
+	return goa.NewServiceError(err, "DivByZero", false, false, false)
 }
