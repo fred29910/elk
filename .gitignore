@@ -3,3 +3,4 @@ build
 _example
 vendor
 .vscode/
+bin/*
