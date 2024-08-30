@@ -12,11 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 import type { Address } from './Address';
 import {
     AddressFromJSON,
-    AddressFromJSONTyped,
     AddressToJSON,
 } from './Address';
 
@@ -49,7 +47,7 @@ export interface Customer {
 /**
  * Check if a given object implements the Customer interface.
  */
-export function instanceOfCustomer(value: object): value is Customer {
+export function instanceOfCustomer(_value: object): _value is Customer {
     return true;
 }
 
@@ -57,7 +55,7 @@ export function CustomerFromJSON(json: any): Customer {
     return CustomerFromJSONTyped(json, false);
 }
 
-export function CustomerFromJSONTyped(json: any, ignoreDiscriminator: boolean): Customer {
+export function CustomerFromJSONTyped(json: any, _ignoreDiscriminator: boolean): Customer {
     if (json == null) {
         return json;
     }

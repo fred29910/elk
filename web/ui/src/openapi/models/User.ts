@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -72,7 +71,7 @@ export interface User {
 /**
  * Check if a given object implements the User interface.
  */
-export function instanceOfUser(value: object): value is User {
+export function instanceOfUser(_value: object): _value is User {
     return true;
 }
 
@@ -80,7 +79,7 @@ export function UserFromJSON(json: any): User {
     return UserFromJSONTyped(json, false);
 }
 
-export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User {
+export function UserFromJSONTyped(json: any, _ignoreDiscriminator: boolean): User {
     if (json == null) {
         return json;
     }

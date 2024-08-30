@@ -12,17 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 import type { Category } from './Category';
 import {
     CategoryFromJSON,
-    CategoryFromJSONTyped,
     CategoryToJSON,
 } from './Category';
 import type { Tag } from './Tag';
 import {
     TagFromJSON,
-    TagFromJSONTyped,
     TagToJSON,
 } from './Tag';
 
@@ -95,7 +92,7 @@ export function PetFromJSON(json: any): Pet {
     return PetFromJSONTyped(json, false);
 }
 
-export function PetFromJSONTyped(json: any, ignoreDiscriminator: boolean): Pet {
+export function PetFromJSONTyped(json: any, _ignoreDiscriminator: boolean): Pet {
     if (json == null) {
         return json;
     }

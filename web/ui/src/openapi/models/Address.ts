@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -48,7 +47,7 @@ export interface Address {
 /**
  * Check if a given object implements the Address interface.
  */
-export function instanceOfAddress(value: object): value is Address {
+export function instanceOfAddress(_value: object): _value is Address {
     return true;
 }
 
@@ -56,7 +55,7 @@ export function AddressFromJSON(json: any): Address {
     return AddressFromJSONTyped(json, false);
 }
 
-export function AddressFromJSONTyped(json: any, ignoreDiscriminator: boolean): Address {
+export function AddressFromJSONTyped(json: any, _ignoreDiscriminator: boolean): Address {
     if (json == null) {
         return json;
     }

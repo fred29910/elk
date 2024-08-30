@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -42,7 +41,7 @@ export interface ModelApiResponse {
 /**
  * Check if a given object implements the ModelApiResponse interface.
  */
-export function instanceOfModelApiResponse(value: object): value is ModelApiResponse {
+export function instanceOfModelApiResponse(_value: object): _value is ModelApiResponse {
     return true;
 }
 
@@ -50,7 +49,7 @@ export function ModelApiResponseFromJSON(json: any): ModelApiResponse {
     return ModelApiResponseFromJSONTyped(json, false);
 }
 
-export function ModelApiResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ModelApiResponse {
+export function ModelApiResponseFromJSONTyped(json: any, _ignoreDiscriminator: boolean): ModelApiResponse {
     if (json == null) {
         return json;
     }

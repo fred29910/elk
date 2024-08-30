@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -44,7 +43,7 @@ export function TagFromJSON(json: any): Tag {
     return TagFromJSONTyped(json, false);
 }
 
-export function TagFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tag {
+export function TagFromJSONTyped(json: any, _ignoreDiscriminator: boolean): Tag {
     if (json == null) {
         return json;
     }

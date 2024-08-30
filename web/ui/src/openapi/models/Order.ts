@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+
 /**
  * 
  * @export
@@ -72,7 +72,7 @@ export type OrderStatusEnum = typeof OrderStatusEnum[keyof typeof OrderStatusEnu
 /**
  * Check if a given object implements the Order interface.
  */
-export function instanceOfOrder(value: object): value is Order {
+export function instanceOfOrder(_value: object): _value is Order {
     return true;
 }
 
@@ -80,7 +80,7 @@ export function OrderFromJSON(json: any): Order {
     return OrderFromJSONTyped(json, false);
 }
 
-export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Order {
+export function OrderFromJSONTyped(json: any, _ignoreDiscriminator: boolean): Order {
     if (json == null) {
         return json;
     }

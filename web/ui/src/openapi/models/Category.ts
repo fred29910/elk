@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+
 /**
  * 
  * @export
@@ -36,7 +36,7 @@ export interface Category {
 /**
  * Check if a given object implements the Category interface.
  */
-export function instanceOfCategory(value: object): value is Category {
+export function instanceOfCategory(_value: object): _value is Category {
     return true;
 }
 
@@ -44,7 +44,7 @@ export function CategoryFromJSON(json: any): Category {
     return CategoryFromJSONTyped(json, false);
 }
 
-export function CategoryFromJSONTyped(json: any, ignoreDiscriminator: boolean): Category {
+export function CategoryFromJSONTyped(json: any, _ignoreDiscriminator: boolean): Category {
     if (json == null) {
         return json;
     }
