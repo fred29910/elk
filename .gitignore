@@ -4,3 +4,4 @@ _example
 vendor
 .vscode/
 bin/*
+trace.out
