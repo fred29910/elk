@@ -8,3 +8,4 @@ gen:
 
 clean:
 	rm -rf internal/gen
+	rm -rf build

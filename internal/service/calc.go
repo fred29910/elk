@@ -14,3 +14,7 @@ type svc struct{}
 func (s *svc) Multiply(ctx context.Context, p *calc.MultiplyPayload) (int, error) {
 	return p.A + p.B, nil
 }
+
+func NewCalcService() calc.Service {
+	return &svc{}
+}

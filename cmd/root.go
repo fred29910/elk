@@ -5,10 +5,16 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
+	"github.com/cham/elk/internal/gen/calc"
+	"github.com/cham/elk/internal/gen/http/calc/server"
+	"github.com/cham/elk/internal/service"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	goahttp "goa.design/goa/v3/http"
 )
 
 var (
@@ -28,7 +34,26 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+
+		// 初始化服务
+
+		svc := service.NewCalcService()                       // Create Service
+		endpoints := calc.NewEndpoints(svc)                   // Create endpoints
+		mux := goahttp.NewMuxer()                             // Create HTTP muxer
+		dec := goahttp.RequestDecoder                         // Set HTTP request decoder
+		enc := goahttp.ResponseEncoder                        // Set HTTP response encoder
+		svr := server.New(endpoints, mux, dec, enc, nil, nil) // Create Goa HTTP server
+		server.Mount(mux, svr)                                // Mount Goa server on mux
+		httpsvr := &http.Server{                              // Create Go HTTP server
+			Addr:    "localhost:8081", // Configure server address
+			Handler: mux,              // Set request handler
+		}
+		if err := httpsvr.ListenAndServe(); err != nil { // Start HTTP server
+			panic(err)
+		}
+
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
