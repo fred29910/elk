@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	host := "127.0.0.1:27017/paidui"
+	host := "127.0.0.1:27017/xasdafsda"
 	m_session, err := mgo.Dial(host)
 	if err != nil {
 		err = fmt.Errorf("Dial dns %v failed %v", host, err)
