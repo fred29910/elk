@@ -81,3 +81,71 @@ var _ = Service("calc", func() {
 		})
 	})
 })
+
+var JWTAuth = JWTSecurity("jwt", func() {
+	Description("JWT认证")
+	Scope("api:access", "API访问权限")
+})
+
+var _ = Service("login", func() {
+	Description("登录服务")
+
+	Security(JWTAuth, func() {
+		Scope("api:access")
+	})
+	Method("login", func() {
+		NoSecurity()
+		Payload(func() {
+			Field(1, "username", String, "用户名")
+			Field(2, "password", String, "密码")
+			Required("username", "password")
+		})
+		Result(LoginResult) // 更新结果为 LoginResult
+		HTTP(func() {
+			POST("/login")
+			Response(StatusOK)
+		})
+	})
+
+	Method("logout", func() {
+		Payload(func() {
+			Token("token", String, "jwt token info")
+			Required("token")
+			// Field(1, "token", String, "JWT令牌") // 使用 Token 定义 JWT 属性
+		})
+		Result(Empty)
+		HTTP(func() {
+			POST("/logout")
+			Response(StatusOK)
+		})
+	})
+
+	Method("currentUser", func() {
+		Payload(func() {
+			Token("token", String, "jwt token info")
+
+			Required("token")
+		})
+		Result(User)
+		HTTP(func() {
+			GET("/current-user")
+			Response(StatusOK)
+		})
+	})
+})
+
+// 定义 User 类型
+var User = Type("User", func() {
+	Attribute("id", String, "用户ID")
+	Attribute("username", String, "用户名")
+	Attribute("email", String, "用户邮箱")
+	Required("id", "username", "email")
+})
+
+// 定义 LoginResult 类型
+var LoginResult = Type("LoginResult", func() {
+	Attribute("token", String, "JWT令牌")
+	Attribute("refresh_token", String, "刷新令牌")
+	Attribute("expires_in", Int, "有效时间（秒）")
+	Required("token", "refresh_token", "expires_in")
+})
