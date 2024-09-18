@@ -1,4 +1,6 @@
 package web
 
+import "embed"
+
 //go:embed ui/dist
-var UiDs emb.FS
+var UiDs embed.FS

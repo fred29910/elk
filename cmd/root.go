@@ -4,9 +4,13 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/cham/elk/internal/gen/calc"
 	"github.com/cham/elk/internal/gen/http/calc/server"
@@ -49,10 +53,34 @@ to quickly create a Cobra application.`,
 			Addr:    "localhost:8081", // Configure server address
 			Handler: mux,              // Set request handler
 		}
-		if err := httpsvr.ListenAndServe(); err != nil { // Start HTTP server
-			panic(err)
+
+		// 创建一个用于接收操作系统信号的通道
+		stop := make(chan os.Signal, 1)
+		signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+		go func() {
+			if err := httpsvr.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				fmt.Printf("HTTP server error: %v\n", err)
+			}
+		}()
+
+		fmt.Println("Server is running on http://localhost:8081")
+
+		// 等待中断信号
+		<-stop
+
+		fmt.Println("Shutting down server...")
+
+		// 创建一个带有超时的上下文
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		// 优雅地关闭服务器
+		if err := httpsvr.Shutdown(ctx); err != nil {
+			fmt.Printf("Server forced to shutdown: %v\n", err)
 		}
 
+		fmt.Println("Server exiting")
 	},
 }
 
