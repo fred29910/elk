@@ -9,12 +9,15 @@ export default function Login() {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // 这里应该有实际的登录逻辑，比如API调用
-    // 为了演示，我们直接调用login
-    login(username);
-    navigate('/');
+    try {
+      await login(username, password);
+      navigate('/');
+    } catch (error) {
+      // 处理登录错误，例如显示错误消息
+      console.error('登录失败:', error);
+    }
   };
 
   return (

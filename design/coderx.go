@@ -15,8 +15,33 @@ var _ = API("coderx", func() {
 	})
 })
 
+var ParserResult = Type("ParserResult", func() {
+	Field(1, "parsedCode", String, "解析后的代码")
+	Field(2, "errors", ArrayOf(String), "解析错误信息")
+	Required("parsedCode")
+})
+
 var _ = Service("coderx", func() {
 	Description("The coderx service provides code generation and management functionalities.")
+
+	Method("parseCode", func() {
+		Payload(func() {
+			Field(1, "code", String, "待解析的代码")
+			Field(2, "Authorization", String, "Bearer {token}", func() { // 添加 Authorization 到 Payload
+				Description("JWT 令牌")
+			})
+			Required("code")
+		})
+		Result(ParserResult) // 使用 ParserResult 作为结果类型
+		HTTP(func() {
+			POST("/parse")
+			Header("Authorization", String, "Bearer {token}", func() { // 添加 Token 到 Header
+				Description("JWT 令牌")
+			})
+		})
+		GRPC(func() {
+		})
+	})
 
 	Method("generateCode", func() {
 		Payload(func() {
@@ -24,7 +49,7 @@ var _ = Service("coderx", func() {
 			Field(2, "specification", String, "Code specification")
 			Required("language", "specification")
 		})
-		Result(String)
+		Result(ParserResult)
 		HTTP(func() {
 			POST("/generate")
 		})
@@ -111,7 +136,6 @@ var _ = Service("login", func() {
 		Payload(func() {
 			Token("token", String, "jwt token info")
 			Required("token")
-			// Field(1, "token", String, "JWT令牌") // 使用 Token 定义 JWT 属性
 		})
 		Result(Empty)
 		HTTP(func() {
