@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "genapi": "openapi-generator-cli generate -i ../../gen/http/openapi3.yaml -g typescript-fetch  -o src/openapi && bash  apierrorps.sh",
+    "genapi": "openapi-generator-cli generate -i ../../internal/gen/http/openapi3.yaml -g typescript-fetch  -o src/openapi && bash  apierrorps.sh",
     "preview": "vite preview"
   },
   "dependencies": {

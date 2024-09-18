@@ -123,7 +123,6 @@ var _ = Service("login", func() {
 	Method("currentUser", func() {
 		Payload(func() {
 			Token("token", String, "jwt token info")
-
 			Required("token")
 		})
 		Result(User)

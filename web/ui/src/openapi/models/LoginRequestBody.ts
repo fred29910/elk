@@ -18,63 +18,54 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface User
+ * @interface LoginRequestBody
  */
-export interface User {
+export interface LoginRequestBody {
     /**
-     * 用户邮箱
+     * 密码
      * @type {string}
-     * @memberof User
+     * @memberof LoginRequestBody
      */
-    email: string;
-    /**
-     * 用户ID
-     * @type {string}
-     * @memberof User
-     */
-    id: string;
+    password: string;
     /**
      * 用户名
      * @type {string}
-     * @memberof User
+     * @memberof LoginRequestBody
      */
     username: string;
 }
 
 /**
- * Check if a given object implements the User interface.
+ * Check if a given object implements the LoginRequestBody interface.
  */
-export function instanceOfUser(value: object): value is User {
-    if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('id' in value) || value['id'] === undefined) return false;
+export function instanceOfLoginRequestBody(value: object): value is LoginRequestBody {
+    if (!('password' in value) || value['password'] === undefined) return false;
     if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
-export function UserFromJSON(json: any): User {
-    return UserFromJSONTyped(json, false);
+export function LoginRequestBodyFromJSON(json: any): LoginRequestBody {
+    return LoginRequestBodyFromJSONTyped(json, false);
 }
 
-export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User {
+export function LoginRequestBodyFromJSONTyped(json: any, ignoreDiscriminator: boolean): LoginRequestBody {
     if (json == null) {
         return json;
     }
     return {
         
-        'email': json['email'],
-        'id': json['id'],
+        'password': json['password'],
         'username': json['username'],
     };
 }
 
-export function UserToJSON(value?: User | null): any {
+export function LoginRequestBodyToJSON(value?: LoginRequestBody | null): any {
     if (value == null) {
         return value;
     }
     return {
         
-        'email': value['email'],
-        'id': value['id'],
+        'password': value['password'],
         'username': value['username'],
     };
 }

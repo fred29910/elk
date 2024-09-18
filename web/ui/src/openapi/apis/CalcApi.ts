@@ -1,9 +1,10 @@
 // @ts-nocheck
+// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Calculator Service
- * Service for multiplying numbers, a Goa teaser
+ * CoderX Service
+ * Service for code generation and management
  *
  * The version of the OpenAPI document: 0.0.1
  * 
@@ -15,81 +16,16 @@
 
 
 import * as runtime from '../runtime';
-import type {
-  Create,
-  UpdateRequestBody,
-} from '../models/index';
-import {
-    CreateFromJSON,
-    CreateToJSON,
-    UpdateRequestBodyFromJSON,
-    UpdateRequestBodyToJSON,
-} from '../models/index';
-
-export interface CalcDivideRequest {
-    c: number;
-    d: number;
-}
 
 export interface CalcMultiplyRequest {
     a: number;
     b: number;
 }
 
-export interface CalcUpdateRequest {
-    updateRequestBody: UpdateRequestBody;
-}
-
 /**
  * 
  */
 export class CalcApi extends runtime.BaseAPI {
-
-    /**
-     * Divide returns the integral division of two integers.
-     * divide calc
-     */
-    async calcDivideRaw(requestParameters: CalcDivideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<number>> {
-        if (requestParameters['c'] == null) {
-            throw new runtime.RequiredError(
-                'c',
-                'Required parameter "c" was null or undefined when calling calcDivide().'
-            );
-        }
-
-        if (requestParameters['d'] == null) {
-            throw new runtime.RequiredError(
-                'd',
-                'Required parameter "d" was null or undefined when calling calcDivide().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/div/{c}/{d}`.replace(`{${"c"}}`, encodeURIComponent(String(requestParameters['c']))).replace(`{${"d"}}`, encodeURIComponent(String(requestParameters['d']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        if (this.isJsonMime(response.headers.get('content-type'))) {
-            return new runtime.JSONApiResponse<number>(response);
-        } else {
-            return new runtime.TextApiResponse(response) as any;
-        }
-    }
-
-    /**
-     * Divide returns the integral division of two integers.
-     * divide calc
-     */
-    async calcDivide(requestParameters: CalcDivideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
-        const response = await this.calcDivideRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      * multiply calc
@@ -132,44 +68,6 @@ export class CalcApi extends runtime.BaseAPI {
      */
     async calcMultiply(requestParameters: CalcMultiplyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<number> {
         const response = await this.calcMultiplyRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Change account name
-     * update calc
-     */
-    async calcUpdateRaw(requestParameters: CalcUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Create>> {
-        if (requestParameters['updateRequestBody'] == null) {
-            throw new runtime.RequiredError(
-                'updateRequestBody',
-                'Required parameter "updateRequestBody" was null or undefined when calling calcUpdate().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        const response = await this.request({
-            path: `/update`,
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: UpdateRequestBodyToJSON(requestParameters['updateRequestBody']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CreateFromJSON(jsonValue));
-    }
-
-    /**
-     * Change account name
-     * update calc
-     */
-    async calcUpdate(requestParameters: CalcUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Create> {
-        const response = await this.calcUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

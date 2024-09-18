@@ -1,8 +1,14 @@
+.openapi-generator-ignore
 apis/CalcApi.ts
+apis/CoderxApi.ts
+apis/LoginApi.ts
 apis/index.ts
 index.ts
-models/Create.ts
-models/ModelError.ts
-models/UpdateRequestBody.ts
+models/AnalyzeCodeRequestBody.ts
+models/GenerateCodeRequestBody.ts
+models/LoginRequestBody.ts
+models/LoginResult.ts
+models/OptimizeCodeRequestBody.ts
+models/User.ts
 models/index.ts
 runtime.ts

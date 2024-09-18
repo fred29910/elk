@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Calculator Service
- * Service for multiplying numbers, a Goa teaser
+ * CoderX Service
+ * Service for code generation and management
  *
  * The version of the OpenAPI document: 0.0.1
  * 
