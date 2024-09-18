@@ -3,11 +3,14 @@ module github.com/cham/elk
 go 1.22.5
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	goa.design/goa/v3 v3.19.0
+	golang.org/x/crypto v0.26.0
 	google.golang.org/grpc v1.66.1
 	google.golang.org/protobuf v1.34.2
+	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -19,6 +22,8 @@ require (
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/manveru/faker v0.0.0-20171103152722-9fbc68a78c4d // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect

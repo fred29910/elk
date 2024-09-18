@@ -14,11 +14,16 @@ var _ = API("coderx", func() {
 		})
 	})
 })
-
 var ParserResult = Type("ParserResult", func() {
 	Field(1, "parsedCode", String, "解析后的代码")
 	Field(2, "errors", ArrayOf(String), "解析错误信息")
 	Required("parsedCode")
+})
+var QueryParams = Type("QueryParams", func() {
+	Field(1, "fields", ArrayOf(String), "选择的字段")
+	Field(2, "filters", MapOf(String, Any), "过滤条件")
+	Field(3, "page", Int, "页码")
+	Field(4, "pageSize", Int, "每页数量")
 })
 
 var _ = Service("coderx", func() {
@@ -81,6 +86,32 @@ var _ = Service("coderx", func() {
 			POST("/optimize")
 		})
 		GRPC(func() {
+		})
+	})
+
+	Method("listUsers", func() {
+		Description("列出用户")
+		Payload(func() {
+			// Attribute("queryParams", QueryParams)
+			Field(1, "fields", ArrayOf(String), "选择的字段")
+			Field(2, "filters", MapOf(String, Any), "过滤条件")
+			Field(3, "page", Int, "页码")
+			Field(4, "pageSize", Int, "每页数量")
+			Required("fields", "page", "pageSize")
+		})
+		Result(func() {
+			Attribute("users", ArrayOf(User))
+			Attribute("total", Int64, "总数")
+			Required("users", "total")
+		})
+		HTTP(func() {
+			GET("/users")
+			Params(func() {
+				Param("fields")
+				Param("filters")
+				Param("page")
+				Param("pageSize")
+			})
 		})
 	})
 })
