@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"reflect"
 
 	"github.com/cham/elk/internal/db/model"
@@ -16,67 +17,67 @@ func NewCRUD(db *gorm.DB) *CRUD {
 }
 
 // User CRUD
-func (c *CRUD) CreateUser(user *model.User) error {
-	return c.db.Create(user).Error
+func (c *CRUD) CreateUser(ctx context.Context, user *model.User) error {
+	return c.db.WithContext(ctx).Create(user).Error
 }
 
-func (c *CRUD) GetUserByID(id uint) (*model.User, error) {
+func (c *CRUD) GetUserByID(ctx context.Context, id uint) (*model.User, error) {
 	var user model.User
-	err := c.db.First(&user, id).Error
+	err := c.db.WithContext(ctx).First(&user, id).Error
 	return &user, err
 }
 
-func (c *CRUD) UpdateUser(user *model.User) error {
-	return c.db.Save(user).Error
+func (c *CRUD) UpdateUser(ctx context.Context, user *model.User) error {
+	return c.db.WithContext(ctx).Save(user).Error
 }
 
-func (c *CRUD) DeleteUser(id uint) error {
-	return c.db.Delete(&model.User{}, id).Error
+func (c *CRUD) DeleteUser(ctx context.Context, id uint) error {
+	return c.db.WithContext(ctx).Delete(&model.User{}, id).Error
 }
 
 // Schema CRUD
-func (c *CRUD) CreateSchema(schema *model.Schema) error {
-	return c.db.Create(schema).Error
+func (c *CRUD) CreateSchema(ctx context.Context, schema *model.Schema) error {
+	return c.db.WithContext(ctx).Create(schema).Error
 }
 
-func (c *CRUD) GetSchemaByID(id uint) (*model.Schema, error) {
+func (c *CRUD) GetSchemaByID(ctx context.Context, id uint) (*model.Schema, error) {
 	var schema model.Schema
-	err := c.db.First(&schema, id).Error
+	err := c.db.WithContext(ctx).First(&schema, id).Error
 	return &schema, err
 }
 
-func (c *CRUD) UpdateSchema(schema *model.Schema) error {
-	return c.db.Save(schema).Error
+func (c *CRUD) UpdateSchema(ctx context.Context, schema *model.Schema) error {
+	return c.db.WithContext(ctx).Save(schema).Error
 }
 
-func (c *CRUD) DeleteSchema(id uint) error {
-	return c.db.Delete(&model.Schema{}, id).Error
+func (c *CRUD) DeleteSchema(ctx context.Context, id uint) error {
+	return c.db.WithContext(ctx).Delete(&model.Schema{}, id).Error
 }
 
 // Code CRUD
-func (c *CRUD) CreateCode(code *model.Code) error {
-	return c.db.Create(code).Error
+func (c *CRUD) CreateCode(ctx context.Context, code *model.Code) error {
+	return c.db.WithContext(ctx).Create(code).Error
 }
 
-func (c *CRUD) GetCodeByID(id uint) (*model.Code, error) {
+func (c *CRUD) GetCodeByID(ctx context.Context, id uint) (*model.Code, error) {
 	var code model.Code
-	err := c.db.First(&code, id).Error
+	err := c.db.WithContext(ctx).First(&code, id).Error
 	return &code, err
 }
 
-func (c *CRUD) UpdateCode(code *model.Code) error {
-	return c.db.Save(code).Error
+func (c *CRUD) UpdateCode(ctx context.Context, code *model.Code) error {
+	return c.db.WithContext(ctx).Save(code).Error
 }
 
-func (c *CRUD) DeleteCode(id uint) error {
-	return c.db.Delete(&model.Code{}, id).Error
+func (c *CRUD) DeleteCode(ctx context.Context, id uint) error {
+	return c.db.WithContext(ctx).Delete(&model.Code{}, id).Error
 }
 
 // User列表查询
-func (c *CRUD) ListUsers(params QueryParams) ([]model.User, int64, error) {
+func (c *CRUD) ListUsers(ctx context.Context, params QueryParams) ([]model.User, int64, error) {
 	var users []model.User
 	var total int64
-	query := c.db.Model(&model.User{})
+	query := c.db.WithContext(ctx).Model(&model.User{})
 
 	// 应用查询条件
 	query = applyQueryParams(query, params)
@@ -100,10 +101,10 @@ func (c *CRUD) ListUsers(params QueryParams) ([]model.User, int64, error) {
 }
 
 // Schema列表查询
-func (c *CRUD) ListSchemas(params QueryParams) ([]model.Schema, int64, error) {
+func (c *CRUD) ListSchemas(ctx context.Context, params QueryParams) ([]model.Schema, int64, error) {
 	var schemas []model.Schema
 	var total int64
-	query := c.db.Model(&model.Schema{})
+	query := c.db.WithContext(ctx).Model(&model.Schema{})
 
 	query = applyQueryParams(query, params)
 
@@ -123,10 +124,10 @@ func (c *CRUD) ListSchemas(params QueryParams) ([]model.Schema, int64, error) {
 }
 
 // Code列表查询
-func (c *CRUD) ListCodes(params QueryParams) ([]model.Code, int64, error) {
+func (c *CRUD) ListCodes(ctx context.Context, params QueryParams) ([]model.Code, int64, error) {
 	var codes []model.Code
 	var total int64
-	query := c.db.Model(&model.Code{})
+	query := c.db.WithContext(ctx).Model(&model.Code{})
 
 	query = applyQueryParams(query, params)
 
@@ -181,8 +182,8 @@ func isZero(v interface{}) bool {
 	return v == nil || reflect.DeepEqual(v, reflect.Zero(reflect.TypeOf(v)).Interface())
 }
 
-func (c *CRUD) GetUserByUsername(name string) (*model.User, error) {
+func (c *CRUD) GetUserByUsername(ctx context.Context, name string) (*model.User, error) {
 	var user model.User
-	err := c.db.Where("username = ?", name).First(&user).Error
+	err := c.db.WithContext(ctx).Where("username = ?", name).First(&user).Error
 	return &user, err
 }

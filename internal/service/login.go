@@ -21,7 +21,7 @@ func NewLoginService(crud *db.CRUD) *LoginService {
 }
 
 func (s *LoginService) Login(ctx context.Context, username, password string) (string, string, int, error) {
-	user, err := s.crud.GetUserByUsername(username)
+	user, err := s.crud.GetUserByUsername(ctx, username)
 	if err != nil {
 		return "", "", 0, err
 	}
@@ -64,7 +64,7 @@ func (s *LoginService) CurrentUser(ctx context.Context, token string) (*model.Us
 	}
 
 	userID := uint(claims["user_id"].(float64))
-	return s.crud.GetUserByID(userID)
+	return s.crud.GetUserByID(ctx, userID)
 }
 
 func (s *LoginService) ListUsers(ctx context.Context, fields []string, filters map[string]interface{}, page, pageSize int) ([]model.User, int64, error) {
@@ -76,5 +76,5 @@ func (s *LoginService) ListUsers(ctx context.Context, fields []string, filters m
 		PageSize: pageSize,
 	}
 
-	return s.crud.ListUsers(queryParams)
+	return s.crud.ListUsers(ctx, queryParams)
 }
