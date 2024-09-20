@@ -6,19 +6,17 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/cham/elk/internal/gen/calc"
-	"github.com/cham/elk/internal/gen/http/calc/server"
-	"github.com/cham/elk/internal/service"
+	"github.com/cham/elk/internal/router"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	goahttp "goa.design/goa/v3/http"
 )
 
 var (
@@ -40,29 +38,24 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-		// 初始化服务
+		r := gin.New()
+		router.InitUserRoutes(r)
 
-		svc := service.NewCalcService()                       // Create Service
-		endpoints := calc.NewEndpoints(svc)                   // Create endpoints
-		mux := goahttp.NewMuxer()                             // Create HTTP muxer
-		dec := goahttp.RequestDecoder                         // Set HTTP request decoder
-		enc := goahttp.ResponseEncoder                        // Set HTTP response encoder
-		svr := server.New(endpoints, mux, dec, enc, nil, nil) // Create Goa HTTP server
-		server.Mount(mux, svr)                                // Mount Goa server on mux
-		httpsvr := &http.Server{                              // Create Go HTTP server
-			Addr:    "localhost:8081", // Configure server address
-			Handler: mux,              // Set request handler
+		srv := &http.Server{
+			Addr:    ":8080",
+			Handler: r.Handler(),
 		}
+
+		go func() {
+			// service connections
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
+			}
+		}()
 
 		// 创建一个用于接收操作系统信号的通道
 		stop := make(chan os.Signal, 1)
 		signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
-
-		go func() {
-			if err := httpsvr.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				fmt.Printf("HTTP server error: %v\n", err)
-			}
-		}()
 
 		fmt.Println("Server is running on http://localhost:8081")
 
@@ -76,8 +69,12 @@ to quickly create a Cobra application.`,
 		defer cancel()
 
 		// 优雅地关闭服务器
-		if err := httpsvr.Shutdown(ctx); err != nil {
+		if err := srv.Shutdown(ctx); err != nil {
 			fmt.Printf("Server forced to shutdown: %v\n", err)
+		}
+		select {
+		case <-ctx.Done():
+			fmt.Println("Server exiting")
 		}
 
 		fmt.Println("Server exiting")
