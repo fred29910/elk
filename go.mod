@@ -3,6 +3,7 @@ module github.com/cham/elk
 go 1.22.5
 
 require (
+	github.com/gin-gonic/contrib v0.0.0-20240508051311-c1c6bf0061b0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0

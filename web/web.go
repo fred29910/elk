@@ -2,57 +2,43 @@ package web
 
 import (
 	"embed"
+	iofs "io/fs"
 	"net/http"
-	"path"
 	"strings"
 )
 
 //go:embed ui/dist
 var UiDs embed.FS
 
-// PrefixFileSystem wraps an existing http.FileSystem to remove a prefix from the file path.
-type PrefixFileSystem struct {
-	fs     http.FileSystem
-	prefix string
+type binaryFileSystem struct {
+	fs http.FileSystem
 }
 
-func (pfs *PrefixFileSystem) Open(name string) (http.File, error) {
-	// Remove the prefix from the file path
-	name = strings.TrimPrefix(name, pfs.prefix)
-	return pfs.fs.Open(name)
+func (b *binaryFileSystem) Open(name string) (http.File, error) {
+	return b.fs.Open(name)
 }
 
-// NewPrefixFileSystem creates a new PrefixFileSystem
-func NewPrefixFileSystem(fs embed.FS, prefix string) http.FileSystem {
-	// subFS, err := iofs.Sub(fs, prefix)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	return &PrefixFileSystem{
-		fs:     http.FS(fs),
-		prefix: prefix,
+func (b *binaryFileSystem) Exists(prefix string, filepath string) bool {
+
+	if p := strings.TrimPrefix(filepath, prefix); len(p) < len(filepath) {
+		if p == "" {
+			p = "/index.html"
+		}
+		if _, err := b.fs.Open(p); err != nil {
+			return false
+		}
+		return true
 	}
+	return false
 }
 
-// GetContentType returns the content type based on the file extension
-func GetContentType(filePath string) string {
-	ext := path.Ext(filePath)
-	switch ext {
-	case ".js":
-		return "text/javascript"
-	case ".css":
-		return "text/css"
-	case ".html":
-		return "text/html"
-	case ".png":
-		return "image/png"
-	case ".jpg", ".jpeg":
-		return "image/jpeg"
-	case ".gif":
-		return "image/gif"
-	case ".svg":
-		return "image/svg+xml"
-	default:
-		return "application/octet-stream"
+func BinaryFileSystem(root string) *binaryFileSystem {
+	sub, err := iofs.Sub(UiDs, root)
+	if err != nil {
+		panic(err)
+	}
+	fs := http.FS(sub)
+	return &binaryFileSystem{
+		fs,
 	}
 }

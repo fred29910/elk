@@ -6,7 +6,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	iofs "io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +15,7 @@ import (
 
 	"github.com/cham/elk/internal/router"
 	"github.com/cham/elk/web"
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -41,19 +41,11 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		r := gin.New()
-
+		fs := web.BinaryFileSystem("ui/dist")
+		r.Use(static.Serve("/", fs))
 		router.InitUserRoutes(r)
 		// 使用自定义的文件系统来移除路径前缀
 		// fs := web.NewPrefixFileSystem(web.UiDs, "ui/dist")
-
-		sub, err := iofs.Sub(web.UiDs, "ui/dist")
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		fs := http.FS(sub)
-
-		r.StaticFS("/static/", fs)
 
 		srv := &http.Server{
 			Addr:    ":8081",
