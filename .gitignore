@@ -7,3 +7,5 @@ bin/*
 trace.out
 
 internal/gen
+
+__debug_bin*

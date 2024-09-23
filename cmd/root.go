@@ -53,42 +53,7 @@ to quickly create a Cobra application.`,
 		}
 		fs := http.FS(sub)
 
-		r.NoRoute(func(c *gin.Context) {
-			c.FileFromFS("", fs)
-			// fmt.Println("NoRoute", c.Request.URL.Path)
-			requestPath := c.Request.URL.Path
-
-			if requestPath != "/" {
-				contentType := web.GetContentType(requestPath)
-				c.Writer.Header().Add("Content-Type", contentType)
-			}
-			// // 尝试打开文件
-			// if file, err := fs.Open(requestPath); err == nil {
-			// 	defer file.Close()
-			// 	// 设置正确的 Content-Type
-			// 	contentType := web.GetContentType(requestPath)
-			// 	c.Header("Content-Type", contentType)
-			// 	io.Copy(c.Writer, file)
-			// 	c.Status(http.StatusOK)
-			// 	return
-			// } else {
-			// 	// 如果文件不存在，则返回 index.html
-			// 	c.Header("Content-Type", "text/html")
-			// 	// c.FileFromFS("index.html", fs)
-			// 	file, err := fs.Open("index.html")
-			// 	if err != nil {
-			// 		fmt.Println(err)
-			// 		c.Status(http.StatusInternalServerError)
-			// 		return
-			// 	}
-			// 	defer file.Close()
-			// 	io.Copy(c.Writer, file)
-			// 	c.Status(http.StatusOK)
-			// 	return
-			// }
-		})
-
-		// r.StaticFS("/static", fs)
+		r.StaticFS("/static/", fs)
 
 		srv := &http.Server{
 			Addr:    ":8081",

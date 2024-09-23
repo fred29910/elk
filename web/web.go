@@ -39,7 +39,7 @@ func GetContentType(filePath string) string {
 	ext := path.Ext(filePath)
 	switch ext {
 	case ".js":
-		return "application/javascript"
+		return "text/javascript"
 	case ".css":
 		return "text/css"
 	case ".html":
