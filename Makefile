@@ -1,6 +1,6 @@
 .PHONY: build gen clean
 build:
-	go build --trimpath -o build/  ./...
+	go build --trimpath -ldflags "-s -w"  -o build/  ./...
 
 gen:
 	swag init -g cmd/coderx/main.go
