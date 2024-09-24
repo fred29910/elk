@@ -8,3 +8,8 @@ type UserQuery struct {
 	SortBy   string `form:"sort_by" json:"sort_by"`
 	SortDesc bool   `form:"sort_desc" json:"sort_desc"`
 }
+
+type Error struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}

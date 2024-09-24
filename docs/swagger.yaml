@@ -1,0 +1,110 @@
+definitions:
+  ov.Error:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  ov.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      status:
+        type: integer
+      username:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8081
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: coderx server
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: coderx
+  version: "1.0"
+paths:
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户列表
+      parameters:
+      - in: query
+        name: email
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: sort_by
+        type: string
+      - in: query
+        name: sort_desc
+        type: boolean
+      - in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ov.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ov.Error'
+      summary: 获取用户列表
+      tags:
+      - 用户管理
+    post:
+      consumes:
+      - application/json
+      description: 创建用户
+      parameters:
+      - description: 用户信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/ov.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ov.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ov.Error'
+      summary: 创建用户
+      tags:
+      - 用户管理
+securityDefinitions:
+  OAuth2Password:
+    description: OAuth protects our entity endpoints
+    flow: password
+    scopes:
+      write: Grants write access
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"
