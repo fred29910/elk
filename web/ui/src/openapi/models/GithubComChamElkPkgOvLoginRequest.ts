@@ -1,5 +1,4 @@
 // @ts-nocheck
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -18,44 +17,44 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface OvLoginRequest
+ * @interface GithubComChamElkPkgOvLoginRequest
  */
-export interface OvLoginRequest {
+export interface GithubComChamElkPkgOvLoginRequest {
     /**
      * 
      * @type {string}
-     * @memberof OvLoginRequest
+     * @memberof GithubComChamElkPkgOvLoginRequest
      */
     captcha: string;
     /**
      * 
      * @type {string}
-     * @memberof OvLoginRequest
+     * @memberof GithubComChamElkPkgOvLoginRequest
      */
     password: string;
     /**
      * 
      * @type {string}
-     * @memberof OvLoginRequest
+     * @memberof GithubComChamElkPkgOvLoginRequest
      */
     username: string;
 }
 
 /**
- * Check if a given object implements the OvLoginRequest interface.
+ * Check if a given object implements the GithubComChamElkPkgOvLoginRequest interface.
  */
-export function instanceOfOvLoginRequest(value: object): value is OvLoginRequest {
+export function instanceOfGithubComChamElkPkgOvLoginRequest(value: object): value is GithubComChamElkPkgOvLoginRequest {
     if (!('captcha' in value) || value['captcha'] === undefined) return false;
     if (!('password' in value) || value['password'] === undefined) return false;
     if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
-export function OvLoginRequestFromJSON(json: any): OvLoginRequest {
-    return OvLoginRequestFromJSONTyped(json, false);
+export function GithubComChamElkPkgOvLoginRequestFromJSON(json: any): GithubComChamElkPkgOvLoginRequest {
+    return GithubComChamElkPkgOvLoginRequestFromJSONTyped(json, false);
 }
 
-export function OvLoginRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OvLoginRequest {
+export function GithubComChamElkPkgOvLoginRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GithubComChamElkPkgOvLoginRequest {
     if (json == null) {
         return json;
     }
@@ -67,7 +66,7 @@ export function OvLoginRequestFromJSONTyped(json: any, ignoreDiscriminator: bool
     };
 }
 
-export function OvLoginRequestToJSON(value?: OvLoginRequest | null): any {
+export function GithubComChamElkPkgOvLoginRequestToJSON(value?: GithubComChamElkPkgOvLoginRequest | null): any {
     if (value == null) {
         return value;
     }

@@ -1,5 +1,4 @@
 // @ts-nocheck
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -18,47 +17,47 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface OvToken
+ * @interface GithubComChamElkPkgOvToken
  */
-export interface OvToken {
+export interface GithubComChamElkPkgOvToken {
     /**
      * 
      * @type {number}
-     * @memberof OvToken
+     * @memberof GithubComChamElkPkgOvToken
      */
     expiresIn?: number;
     /**
      * 
      * @type {string}
-     * @memberof OvToken
+     * @memberof GithubComChamElkPkgOvToken
      */
     refreshToken?: string;
     /**
      * 
      * @type {string}
-     * @memberof OvToken
+     * @memberof GithubComChamElkPkgOvToken
      */
     token?: string;
     /**
      * 
      * @type {string}
-     * @memberof OvToken
+     * @memberof GithubComChamElkPkgOvToken
      */
     tokenType?: string;
 }
 
 /**
- * Check if a given object implements the OvToken interface.
+ * Check if a given object implements the GithubComChamElkPkgOvToken interface.
  */
-export function instanceOfOvToken(value: object): value is OvToken {
+export function instanceOfGithubComChamElkPkgOvToken(value: object): value is GithubComChamElkPkgOvToken {
     return true;
 }
 
-export function OvTokenFromJSON(json: any): OvToken {
-    return OvTokenFromJSONTyped(json, false);
+export function GithubComChamElkPkgOvTokenFromJSON(json: any): GithubComChamElkPkgOvToken {
+    return GithubComChamElkPkgOvTokenFromJSONTyped(json, false);
 }
 
-export function OvTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): OvToken {
+export function GithubComChamElkPkgOvTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): GithubComChamElkPkgOvToken {
     if (json == null) {
         return json;
     }
@@ -71,7 +70,7 @@ export function OvTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): O
     };
 }
 
-export function OvTokenToJSON(value?: OvToken | null): any {
+export function GithubComChamElkPkgOvTokenToJSON(value?: GithubComChamElkPkgOvToken | null): any {
     if (value == null) {
         return value;
     }

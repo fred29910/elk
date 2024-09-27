@@ -13,7 +13,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/cham/elk/internal/config"
 	"github.com/cham/elk/internal/router"
+	"github.com/cham/elk/pkg/middleware"
 	"github.com/cham/elk/web"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -42,13 +44,14 @@ to quickly create a Cobra application.`,
 
 		r := gin.New()
 		fs := web.BinaryFileSystem("ui/dist")
+		r.Use(middleware.AuthMiddleware())
 		r.Use(static.Serve("/", fs))
 		router.InitUserRoutes(r)
 		// 使用自定义的文件系统来移除路径前缀
 		// fs := web.NewPrefixFileSystem(web.UiDs, "ui/dist")
-
+		appConfig := config.GetAppConfig()
 		srv := &http.Server{
-			Addr:    ":8081",
+			Addr:    fmt.Sprintf("%s:%d", appConfig.Host, appConfig.Port),
 			Handler: r,
 		}
 
@@ -63,7 +66,7 @@ to quickly create a Cobra application.`,
 		stop := make(chan os.Signal, 1)
 		signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
-		fmt.Println("Server is running on http://localhost:8081")
+		fmt.Printf("Server is running on http://%s:%d\n", appConfig.Host, appConfig.Port)
 
 		// 等待中断信号
 		<-stop

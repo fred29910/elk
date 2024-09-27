@@ -1,7 +1,6 @@
 package user
 
 import (
-	pq "github.com/cham/elk/internal/ov"
 	"github.com/cham/elk/internal/service/user"
 	"github.com/cham/elk/pkg/ov"
 
@@ -18,7 +17,7 @@ import (
 // @Failure 400 {object} ov.Error
 // @Router /api/users [get]
 func List(c *gin.Context) {
-	var query pq.UserQuery
+	var query ov.UserQuery
 	if err := c.ShouldBindQuery(&query); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return

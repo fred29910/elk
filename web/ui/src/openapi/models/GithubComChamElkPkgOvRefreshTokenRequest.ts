@@ -1,5 +1,4 @@
 // @ts-nocheck
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -18,37 +17,37 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface OvRefreshTokenRequest
+ * @interface GithubComChamElkPkgOvRefreshTokenRequest
  */
-export interface OvRefreshTokenRequest {
+export interface GithubComChamElkPkgOvRefreshTokenRequest {
     /**
      * 
      * @type {string}
-     * @memberof OvRefreshTokenRequest
+     * @memberof GithubComChamElkPkgOvRefreshTokenRequest
      */
     refreshToken: string;
     /**
      * 
      * @type {string}
-     * @memberof OvRefreshTokenRequest
+     * @memberof GithubComChamElkPkgOvRefreshTokenRequest
      */
     token: string;
 }
 
 /**
- * Check if a given object implements the OvRefreshTokenRequest interface.
+ * Check if a given object implements the GithubComChamElkPkgOvRefreshTokenRequest interface.
  */
-export function instanceOfOvRefreshTokenRequest(value: object): value is OvRefreshTokenRequest {
+export function instanceOfGithubComChamElkPkgOvRefreshTokenRequest(value: object): value is GithubComChamElkPkgOvRefreshTokenRequest {
     if (!('refreshToken' in value) || value['refreshToken'] === undefined) return false;
     if (!('token' in value) || value['token'] === undefined) return false;
     return true;
 }
 
-export function OvRefreshTokenRequestFromJSON(json: any): OvRefreshTokenRequest {
-    return OvRefreshTokenRequestFromJSONTyped(json, false);
+export function GithubComChamElkPkgOvRefreshTokenRequestFromJSON(json: any): GithubComChamElkPkgOvRefreshTokenRequest {
+    return GithubComChamElkPkgOvRefreshTokenRequestFromJSONTyped(json, false);
 }
 
-export function OvRefreshTokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OvRefreshTokenRequest {
+export function GithubComChamElkPkgOvRefreshTokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GithubComChamElkPkgOvRefreshTokenRequest {
     if (json == null) {
         return json;
     }
@@ -59,7 +58,7 @@ export function OvRefreshTokenRequestFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function OvRefreshTokenRequestToJSON(value?: OvRefreshTokenRequest | null): any {
+export function GithubComChamElkPkgOvRefreshTokenRequestToJSON(value?: GithubComChamElkPkgOvRefreshTokenRequest | null): any {
     if (value == null) {
         return value;
     }

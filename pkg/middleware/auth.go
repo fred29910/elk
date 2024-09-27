@@ -3,7 +3,10 @@ package middleware
 import (
 	"net/http"
 
+	"github.com/cham/elk/internal/dao/user"
+	"github.com/cham/elk/internal/service/auth"
 	"github.com/cham/elk/pkg/core"
+	"github.com/cham/elk/pkg/errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,17 +26,27 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// TODO: 验证 token 并获取用户信息
-		// 这里应该包含实际的 token 验证逻辑
-
-		// 示例: 假设我们已经验证了 token 并获取了用户信息
-		userInfo := &core.ContextUserInfo{
-			ID:       "user123",
-			Username: "exampleUser",
-			Email:    "user@example.com",
+		uid, err := auth.VerifyToken(token)
+		if err != nil {
+			c.Error(errors.UNAUTHORIZED)
+			c.Abort()
+			return
+		}
+		user, err := user.Get(c, map[string]any{
+			"id": uid,
+		})
+		if err != nil {
+			c.Error(errors.USER_NOT_FOUND)
+			c.Abort()
+			return
 		}
 
 		// 将用户信息存储到上下文中
-		core.StoreContextUserInfo(c, userInfo)
+		core.StoreContextUserInfo(c, &core.ContextUserInfo{
+			ID:       user.ID,
+			Username: user.Username,
+			Email:    user.Email,
+		})
 
 		c.Next()
 	}

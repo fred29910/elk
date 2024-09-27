@@ -3,8 +3,7 @@ package user
 import (
 	"github.com/cham/elk/internal/dao"
 	"github.com/cham/elk/internal/model/user"
-	"github.com/cham/elk/internal/ov"
-	pg "github.com/cham/elk/pkg/ov"
+	"github.com/cham/elk/pkg/ov"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,14 +35,13 @@ func List(c *gin.Context, query ov.UserQuery) ([]user.User, int64, error) {
 	}
 
 	// 分页
-	offset := (query.Page - 1) * query.PageSize
-	tx = tx.Offset(offset).Limit(query.PageSize)
+	tx = dao.Pageble(tx, query.Page, query.PageSize)
 
 	result := tx.Find(&users)
 	return users, total, result.Error
 }
 
-func Create(c *gin.Context, data pg.User) (*user.User, error) {
+func Create(c *gin.Context, data ov.User) (*user.User, error) {
 	user := user.User{
 		Username: data.Username,
 		Email:    data.Email,
@@ -54,7 +52,7 @@ func Create(c *gin.Context, data pg.User) (*user.User, error) {
 	return &user, err
 }
 
-func Update(c *gin.Context, data pg.UpdateUserOV) (*user.User, error) {
+func Update(c *gin.Context, data ov.UpdateUserOV) (*user.User, error) {
 	updataMap := make(map[string]interface{})
 	if data.Username != nil {
 		updataMap["username"] = data.Username

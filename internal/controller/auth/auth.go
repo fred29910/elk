@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/cham/elk/internal/dao/user"
+	"github.com/cham/elk/internal/service/auth"
 	"github.com/cham/elk/pkg/errors"
 	"github.com/cham/elk/pkg/ov"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // @Summary 登陆
@@ -41,9 +41,15 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	token, refreshToken, err := auth.CreateToken(user.ID)
+	if err != nil {
+		c.Error(errors.SERVER_ERROR)
+		return
+	}
+
 	c.JSON(http.StatusOK, &ov.Token{
-		Token:        uuid.New().String(),
-		RefreshToken: uuid.New().String(),
+		Token:        token,
+		RefreshToken: refreshToken,
 		ExpiresIn:    3600,
 	})
 }
@@ -65,6 +71,23 @@ func RefreshToken(c *gin.Context) {
 		return
 	}
 
+	uid, err := auth.VerifyToken(data.RefreshToken)
+	if err != nil {
+		c.Error(errors.SERVER_ERROR)
+		return
+	}
+
+	token, refreshToken, err := auth.CreateToken(uid)
+	if err != nil {
+		c.Error(errors.SERVER_ERROR)
+		return
+	}
+
+	c.JSON(http.StatusOK, &ov.Token{
+		Token:        token,
+		RefreshToken: refreshToken,
+		ExpiresIn:    3600,
+	})
 }
 
 // @Summary 登出
@@ -76,5 +99,11 @@ func RefreshToken(c *gin.Context) {
 // @Failure 400 {object} ov.Error
 // @Router /api/auth/logout [post]
 func Logout(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	if token == "" {
+		c.Error(errors.VALID_ERROR)
+		return
+	}
 
+	auth.Logout(token)
 }

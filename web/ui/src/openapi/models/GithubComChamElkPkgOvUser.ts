@@ -1,5 +1,4 @@
 // @ts-nocheck
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -18,53 +17,53 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface OvUser
+ * @interface GithubComChamElkPkgOvUser
  */
-export interface OvUser {
+export interface GithubComChamElkPkgOvUser {
     /**
      * 
      * @type {string}
-     * @memberof OvUser
+     * @memberof GithubComChamElkPkgOvUser
      */
     email?: string;
     /**
      * 
      * @type {string}
-     * @memberof OvUser
+     * @memberof GithubComChamElkPkgOvUser
      */
     id?: string;
     /**
      * 
      * @type {string}
-     * @memberof OvUser
+     * @memberof GithubComChamElkPkgOvUser
      */
     password?: string;
     /**
      * 
      * @type {number}
-     * @memberof OvUser
+     * @memberof GithubComChamElkPkgOvUser
      */
     status?: number;
     /**
      * 
      * @type {string}
-     * @memberof OvUser
+     * @memberof GithubComChamElkPkgOvUser
      */
     username?: string;
 }
 
 /**
- * Check if a given object implements the OvUser interface.
+ * Check if a given object implements the GithubComChamElkPkgOvUser interface.
  */
-export function instanceOfOvUser(value: object): value is OvUser {
+export function instanceOfGithubComChamElkPkgOvUser(value: object): value is GithubComChamElkPkgOvUser {
     return true;
 }
 
-export function OvUserFromJSON(json: any): OvUser {
-    return OvUserFromJSONTyped(json, false);
+export function GithubComChamElkPkgOvUserFromJSON(json: any): GithubComChamElkPkgOvUser {
+    return GithubComChamElkPkgOvUserFromJSONTyped(json, false);
 }
 
-export function OvUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): OvUser {
+export function GithubComChamElkPkgOvUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): GithubComChamElkPkgOvUser {
     if (json == null) {
         return json;
     }
@@ -78,7 +77,7 @@ export function OvUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ov
     };
 }
 
-export function OvUserToJSON(value?: OvUser | null): any {
+export function GithubComChamElkPkgOvUserToJSON(value?: GithubComChamElkPkgOvUser | null): any {
     if (value == null) {
         return value;
     }

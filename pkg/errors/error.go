@@ -15,6 +15,7 @@ var (
 	UNAUTHORIZED   = NewError(401, "您还未登录")
 	NOT_FOUND      = NewError(404, "资源不存在")
 	INNER_ERROR    = NewError(500, "系统发生异常")
+	SERVER_ERROR   = NewError(501, "服务器发生异常")
 )
 
 func (e *MyError) Error() string {

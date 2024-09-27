@@ -3,7 +3,7 @@ build:
 	go build --trimpath -ldflags "-s -w"  -o build/  ./...
 
 gen:
-	swag init -g cmd/coderx/main.go
+	swag init --parseVendor=true --parseDependency=true -g cmd/coderx/main.go
 
 
 clean:

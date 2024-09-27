@@ -1,5 +1,4 @@
 // @ts-nocheck
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -18,35 +17,35 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface OvError
+ * @interface GithubComChamElkPkgOvError
  */
-export interface OvError {
+export interface GithubComChamElkPkgOvError {
     /**
      * 
      * @type {number}
-     * @memberof OvError
+     * @memberof GithubComChamElkPkgOvError
      */
     code?: number;
     /**
      * 
      * @type {string}
-     * @memberof OvError
+     * @memberof GithubComChamElkPkgOvError
      */
     message?: string;
 }
 
 /**
- * Check if a given object implements the OvError interface.
+ * Check if a given object implements the GithubComChamElkPkgOvError interface.
  */
-export function instanceOfOvError(value: object): value is OvError {
+export function instanceOfGithubComChamElkPkgOvError(value: object): value is GithubComChamElkPkgOvError {
     return true;
 }
 
-export function OvErrorFromJSON(json: any): OvError {
-    return OvErrorFromJSONTyped(json, false);
+export function GithubComChamElkPkgOvErrorFromJSON(json: any): GithubComChamElkPkgOvError {
+    return GithubComChamElkPkgOvErrorFromJSONTyped(json, false);
 }
 
-export function OvErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean): OvError {
+export function GithubComChamElkPkgOvErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean): GithubComChamElkPkgOvError {
     if (json == null) {
         return json;
     }
@@ -57,7 +56,7 @@ export function OvErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean): O
     };
 }
 
-export function OvErrorToJSON(value?: OvError | null): any {
+export function GithubComChamElkPkgOvErrorToJSON(value?: GithubComChamElkPkgOvError | null): any {
     if (value == null) {
         return value;
     }

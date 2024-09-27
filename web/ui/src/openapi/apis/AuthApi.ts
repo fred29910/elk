@@ -16,28 +16,28 @@
 
 import * as runtime from '../runtime';
 import type {
-  OvError,
-  OvLoginRequest,
-  OvRefreshTokenRequest,
-  OvToken,
+  GithubComChamElkPkgOvError,
+  GithubComChamElkPkgOvLoginRequest,
+  GithubComChamElkPkgOvRefreshTokenRequest,
+  GithubComChamElkPkgOvToken,
 } from '../models/index';
 import {
-    OvErrorFromJSON,
-    OvErrorToJSON,
-    OvLoginRequestFromJSON,
-    OvLoginRequestToJSON,
-    OvRefreshTokenRequestFromJSON,
-    OvRefreshTokenRequestToJSON,
-    OvTokenFromJSON,
-    OvTokenToJSON,
+    GithubComChamElkPkgOvErrorFromJSON,
+    GithubComChamElkPkgOvErrorToJSON,
+    GithubComChamElkPkgOvLoginRequestFromJSON,
+    GithubComChamElkPkgOvLoginRequestToJSON,
+    GithubComChamElkPkgOvRefreshTokenRequestFromJSON,
+    GithubComChamElkPkgOvRefreshTokenRequestToJSON,
+    GithubComChamElkPkgOvTokenFromJSON,
+    GithubComChamElkPkgOvTokenToJSON,
 } from '../models/index';
 
 export interface ApiAuthLoginPostRequest {
-    body: OvLoginRequest;
+    body: GithubComChamElkPkgOvLoginRequest;
 }
 
 export interface ApiAuthRefreshTokenPostRequest {
-    body: OvRefreshTokenRequest;
+    body: GithubComChamElkPkgOvRefreshTokenRequest;
 }
 
 /**
@@ -49,7 +49,7 @@ export class AuthApi extends runtime.BaseAPI {
      * 登陆
      * 登陆
      */
-    async apiAuthLoginPostRaw(requestParameters: ApiAuthLoginPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OvToken>> {
+    async apiAuthLoginPostRaw(requestParameters: ApiAuthLoginPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GithubComChamElkPkgOvToken>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -68,17 +68,17 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: OvLoginRequestToJSON(requestParameters['body']),
+            body: GithubComChamElkPkgOvLoginRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OvTokenFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GithubComChamElkPkgOvTokenFromJSON(jsonValue));
     }
 
     /**
      * 登陆
      * 登陆
      */
-    async apiAuthLoginPost(requestParameters: ApiAuthLoginPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OvToken> {
+    async apiAuthLoginPost(requestParameters: ApiAuthLoginPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GithubComChamElkPkgOvToken> {
         const response = await this.apiAuthLoginPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -119,7 +119,7 @@ export class AuthApi extends runtime.BaseAPI {
      * 刷新token
      * 刷新token
      */
-    async apiAuthRefreshTokenPostRaw(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OvToken>> {
+    async apiAuthRefreshTokenPostRaw(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GithubComChamElkPkgOvToken>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -138,17 +138,17 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: OvRefreshTokenRequestToJSON(requestParameters['body']),
+            body: GithubComChamElkPkgOvRefreshTokenRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OvTokenFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GithubComChamElkPkgOvTokenFromJSON(jsonValue));
     }
 
     /**
      * 刷新token
      * 刷新token
      */
-    async apiAuthRefreshTokenPost(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OvToken> {
+    async apiAuthRefreshTokenPost(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GithubComChamElkPkgOvToken> {
         const response = await this.apiAuthRefreshTokenPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

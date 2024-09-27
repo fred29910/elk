@@ -44,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ov.LoginRequest"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.LoginRequest"
                         }
                     }
                 ],
@@ -52,13 +52,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ov.Token"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Token"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ov.Error"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Error"
                         }
                     }
                 }
@@ -87,7 +87,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ov.Error"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Error"
                         }
                     }
                 }
@@ -113,7 +113,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ov.RefreshTokenRequest"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.RefreshTokenRequest"
                         }
                     }
                 ],
@@ -121,13 +121,139 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ov.Token"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Token"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ov.Error"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/systems": {
+            "get": {
+                "description": "获取系统config列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统管理"
+                ],
+                "summary": "获取系统config列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "sort_desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "系统config列表",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_cham_elk_pkg_ov.PageInfo"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/github_com_cham_elk_internal_model_system.System"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "创建系统config",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统管理"
+                ],
+                "summary": "创建系统config",
+                "parameters": [
+                    {
+                        "description": "系统config信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.CreateSystem"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建系统config",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_cham_elk_internal_model_system.System"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Error"
                         }
                     }
                 }
@@ -182,13 +308,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ov.User"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.User"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ov.Error"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Error"
                         }
                     }
                 }
@@ -212,7 +338,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ov.User"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.User"
                         }
                     }
                 ],
@@ -220,13 +346,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ov.User"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.User"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ov.Error"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Error"
                         }
                     }
                 }
@@ -234,7 +360,56 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "ov.Error": {
+        "github_com_cham_elk_internal_model_system.System": {
+            "type": "object",
+            "properties": {
+                "config": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "系统状态，如：1表示运行中，0表示停止",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "系统类型，如：elk",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_cham_elk_pkg_ov.CreateSystem": {
+            "type": "object",
+            "properties": {
+                "config": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_cham_elk_pkg_ov.Error": {
             "type": "object",
             "properties": {
                 "code": {
@@ -245,7 +420,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ov.LoginRequest": {
+        "github_com_cham_elk_pkg_ov.LoginRequest": {
             "type": "object",
             "required": [
                 "captcha",
@@ -264,7 +439,22 @@ const docTemplate = `{
                 }
             }
         },
-        "ov.RefreshTokenRequest": {
+        "github_com_cham_elk_pkg_ov.PageInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_cham_elk_pkg_ov.RefreshTokenRequest": {
             "type": "object",
             "required": [
                 "refresh_token",
@@ -279,7 +469,19 @@ const docTemplate = `{
                 }
             }
         },
-        "ov.Token": {
+        "github_com_cham_elk_pkg_ov.Result": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_cham_elk_pkg_ov.Token": {
             "type": "object",
             "properties": {
                 "expires_in": {
@@ -296,7 +498,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ov.User": {
+        "github_com_cham_elk_pkg_ov.User": {
             "type": "object",
             "properties": {
                 "email": {
@@ -313,6 +515,18 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
                 }
             }
         }

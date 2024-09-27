@@ -13,7 +13,7 @@ func FromContextUserInfo(c context.Context) *ContextUserInfo {
 }
 
 type ContextUserInfo struct {
-	ID       string `json:"id"`
+	ID       uint   `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }

@@ -1,12 +1,45 @@
 definitions:
-  ov.Error:
+  github_com_cham_elk_internal_model_system.System:
+    properties:
+      config:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      remark:
+        description: 备注
+        type: string
+      status:
+        description: 系统状态，如：1表示运行中，0表示停止
+        type: integer
+      type:
+        description: 系统类型，如：elk
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  github_com_cham_elk_pkg_ov.CreateSystem:
+    properties:
+      config:
+        type: string
+      remark:
+        type: string
+      status:
+        type: integer
+      type:
+        type: string
+    type: object
+  github_com_cham_elk_pkg_ov.Error:
     properties:
       code:
         type: integer
       message:
         type: string
     type: object
-  ov.LoginRequest:
+  github_com_cham_elk_pkg_ov.LoginRequest:
     properties:
       captcha:
         type: string
@@ -19,7 +52,17 @@ definitions:
     - password
     - username
     type: object
-  ov.RefreshTokenRequest:
+  github_com_cham_elk_pkg_ov.PageInfo:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  github_com_cham_elk_pkg_ov.RefreshTokenRequest:
     properties:
       refresh_token:
         type: string
@@ -29,7 +72,15 @@ definitions:
     - refresh_token
     - token
     type: object
-  ov.Token:
+  github_com_cham_elk_pkg_ov.Result:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  github_com_cham_elk_pkg_ov.Token:
     properties:
       expires_in:
         type: integer
@@ -40,7 +91,7 @@ definitions:
       token_type:
         type: string
     type: object
-  ov.User:
+  github_com_cham_elk_pkg_ov.User:
     properties:
       email:
         type: string
@@ -52,6 +103,14 @@ definitions:
         type: integer
       username:
         type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
     type: object
 externalDocs:
   description: OpenAPI
@@ -81,18 +140,18 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/ov.LoginRequest'
+          $ref: '#/definitions/github_com_cham_elk_pkg_ov.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ov.Token'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Token'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ov.Error'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
       summary: 登陆
       tags:
       - auth
@@ -111,7 +170,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ov.Error'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
       summary: 登出
       tags:
       - auth
@@ -126,21 +185,96 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/ov.RefreshTokenRequest'
+          $ref: '#/definitions/github_com_cham_elk_pkg_ov.RefreshTokenRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ov.Token'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Token'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ov.Error'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
       summary: 刷新token
       tags:
       - auth
+  /api/systems:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统config列表
+      parameters:
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: sort_by
+        type: string
+      - in: query
+        name: sort_desc
+        type: boolean
+      - in: query
+        name: status
+        type: integer
+      - in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 系统config列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_cham_elk_pkg_ov.PageInfo'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_cham_elk_internal_model_system.System'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
+      summary: 获取系统config列表
+      tags:
+      - 系统管理
+    post:
+      consumes:
+      - application/json
+      description: 创建系统config
+      parameters:
+      - description: 系统config信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_cham_elk_pkg_ov.CreateSystem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建系统config
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_cham_elk_pkg_ov.Result'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_cham_elk_internal_model_system.System'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
+      summary: 创建系统config
+      tags:
+      - 系统管理
   /api/users:
     get:
       consumes:
@@ -171,11 +305,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ov.User'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.User'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ov.Error'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
       summary: 获取用户列表
       tags:
       - 用户管理
@@ -189,18 +323,18 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/ov.User'
+          $ref: '#/definitions/github_com_cham_elk_pkg_ov.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ov.User'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.User'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ov.Error'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
       summary: 创建用户
       tags:
       - 用户管理

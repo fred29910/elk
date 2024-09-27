@@ -16,15 +16,37 @@
 
 import * as runtime from '../runtime';
 import type {
-  OvError,
-  OvUser,
+  ApiSystemsGet200Response,
+  ApiSystemsPost200Response,
+  GithubComChamElkPkgOvCreateSystem,
+  GithubComChamElkPkgOvError,
+  GithubComChamElkPkgOvUser,
 } from '../models/index';
 import {
-    OvErrorFromJSON,
-    OvErrorToJSON,
-    OvUserFromJSON,
-    OvUserToJSON,
+    ApiSystemsGet200ResponseFromJSON,
+    ApiSystemsGet200ResponseToJSON,
+    ApiSystemsPost200ResponseFromJSON,
+    ApiSystemsPost200ResponseToJSON,
+    GithubComChamElkPkgOvCreateSystemFromJSON,
+    GithubComChamElkPkgOvCreateSystemToJSON,
+    GithubComChamElkPkgOvErrorFromJSON,
+    GithubComChamElkPkgOvErrorToJSON,
+    GithubComChamElkPkgOvUserFromJSON,
+    GithubComChamElkPkgOvUserToJSON,
 } from '../models/index';
+
+export interface ApiSystemsGetRequest {
+    page?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortDesc?: boolean;
+    status?: number;
+    type?: string;
+}
+
+export interface ApiSystemsPostRequest {
+    data: GithubComChamElkPkgOvCreateSystem;
+}
 
 export interface ApiUsersGetRequest {
     email?: string;
@@ -36,7 +58,7 @@ export interface ApiUsersGetRequest {
 }
 
 export interface ApiUsersPostRequest {
-    user: OvUser;
+    user: GithubComChamElkPkgOvUser;
 }
 
 /**
@@ -45,10 +67,100 @@ export interface ApiUsersPostRequest {
 export class DefaultApi extends runtime.BaseAPI {
 
     /**
+     * 获取系统config列表
+     * 获取系统config列表
+     */
+    async apiSystemsGetRaw(requestParameters: ApiSystemsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiSystemsGet200Response>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['pageSize'] != null) {
+            queryParameters['page_size'] = requestParameters['pageSize'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDesc'] != null) {
+            queryParameters['sort_desc'] = requestParameters['sortDesc'];
+        }
+
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
+        }
+
+        if (requestParameters['type'] != null) {
+            queryParameters['type'] = requestParameters['type'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/systems`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApiSystemsGet200ResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 获取系统config列表
+     * 获取系统config列表
+     */
+    async apiSystemsGet(requestParameters: ApiSystemsGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiSystemsGet200Response> {
+        const response = await this.apiSystemsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 创建系统config
+     * 创建系统config
+     */
+    async apiSystemsPostRaw(requestParameters: ApiSystemsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiSystemsPost200Response>> {
+        if (requestParameters['data'] == null) {
+            throw new runtime.RequiredError(
+                'data',
+                'Required parameter "data" was null or undefined when calling apiSystemsPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/systems`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: GithubComChamElkPkgOvCreateSystemToJSON(requestParameters['data']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApiSystemsPost200ResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 创建系统config
+     * 创建系统config
+     */
+    async apiSystemsPost(requestParameters: ApiSystemsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiSystemsPost200Response> {
+        const response = await this.apiSystemsPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * 获取用户列表
      * 获取用户列表
      */
-    async apiUsersGetRaw(requestParameters: ApiUsersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OvUser>> {
+    async apiUsersGetRaw(requestParameters: ApiUsersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GithubComChamElkPkgOvUser>> {
         const queryParameters: any = {};
 
         if (requestParameters['email'] != null) {
@@ -84,14 +196,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OvUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GithubComChamElkPkgOvUserFromJSON(jsonValue));
     }
 
     /**
      * 获取用户列表
      * 获取用户列表
      */
-    async apiUsersGet(requestParameters: ApiUsersGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OvUser> {
+    async apiUsersGet(requestParameters: ApiUsersGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GithubComChamElkPkgOvUser> {
         const response = await this.apiUsersGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -100,7 +212,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * 创建用户
      * 创建用户
      */
-    async apiUsersPostRaw(requestParameters: ApiUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OvUser>> {
+    async apiUsersPostRaw(requestParameters: ApiUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GithubComChamElkPkgOvUser>> {
         if (requestParameters['user'] == null) {
             throw new runtime.RequiredError(
                 'user',
@@ -119,17 +231,17 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: OvUserToJSON(requestParameters['user']),
+            body: GithubComChamElkPkgOvUserToJSON(requestParameters['user']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OvUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GithubComChamElkPkgOvUserFromJSON(jsonValue));
     }
 
     /**
      * 创建用户
      * 创建用户
      */
-    async apiUsersPost(requestParameters: ApiUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OvUser> {
+    async apiUsersPost(requestParameters: ApiUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GithubComChamElkPkgOvUser> {
         const response = await this.apiUsersPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

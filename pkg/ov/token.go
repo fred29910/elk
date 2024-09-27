@@ -17,3 +17,18 @@ type RefreshTokenRequest struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 	Token        string `json:"token" binding:"required"`
 }
+
+// result warp
+type Result struct {
+	Data  interface{} `json:"data"`
+	Code  int         `json:"code,omitempty"`
+	Error string      `json:"msg,omitempty"`
+}
+
+// page warp
+type PageInfo struct {
+	Data  any    `json:"data"`
+	Total int64  `json:"total"`
+	Code  int    `json:"code,omitempty"`
+	Error string `json:"msg,omitempty"`
+}

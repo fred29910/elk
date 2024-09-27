@@ -1,0 +1,19 @@
+port = 8081
+host = "localhost"
+
+[jwt]
+secret = "secret"
+expiration = 3600
+
+
+[db]
+model = "sqlite"
+[db.sqlite]
+path = "./data/db.sqlite"
+
+[db.mysql]
+host = "localhost"
+port = 3306
+user = "root"
+password = "root"
+database = "elk"
