@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { LoginApi } from '../openapi/apis/LoginApi'
+import { AuthApi } from '../openapi/apis/AuthApi'
 import { Configuration } from '../openapi/runtime'
-import { LoginRequestBody } from '../openapi/models/LoginRequestBody'
+import { OvLoginRequest } from '../openapi/models/OvLoginRequest'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -15,7 +15,7 @@ interface AuthState {
 // 使用环境变量或默认值
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
-const createApi = (token: string | null) => new LoginApi(
+const createApi = (token: string | null) => new AuthApi(
   new Configuration({ 
     basePath: API_BASE_URL,
     accessToken: token || undefined
@@ -31,8 +31,8 @@ export const useAuthStore = create<AuthState>()(
       login: async (username: string, password: string) => {
         try {
           const api = createApi(null)
-          const loginRequestBody: LoginRequestBody = { username, password }
-          const result = await api.loginLogin({ loginRequestBody })
+          const loginRequestBody: OvLoginRequest = { username, password ,captcha: ''}
+          const result = await api.apiAuthLoginPost({ body: loginRequestBody })
           if (result.token) {
             set({ isAuthenticated: true, username, token: result.token })
           } else {
@@ -46,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         try {
           const api = createApi(get().token)
-          await api.loginLogout()
+          await api.apiAuthLogoutPost()
           set({ isAuthenticated: false, username: null, token: null })
         } catch (error) {
           console.error('登出错误:', error)

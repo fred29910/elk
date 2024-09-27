@@ -16,3 +16,8 @@ func List(c *gin.Context, query ov.UserQuery) ([]muser.User, int64, error) {
 func Create(c *gin.Context, data pg.User) (*muser.User, error) {
 	return user.Create(c, data)
 }
+
+// get user info
+func Get(c *gin.Context, qs map[string]any) (*muser.User, error) {
+	return user.Get(c, qs)
+}

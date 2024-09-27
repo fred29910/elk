@@ -80,3 +80,13 @@ func Update(c *gin.Context, data pg.UpdateUserOV) (*user.User, error) {
 	}
 	return &updatedUser, nil
 }
+
+func Get(c *gin.Context, qs map[string]any) (*user.User, error) {
+	var user user.User
+
+	err := dao.DB(c).Where(qs).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}

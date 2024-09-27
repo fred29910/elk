@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "genapi": "openapi-generator-cli generate -i ../../docs/swagger.yaml -g typescript-fetch  -o src/openapi && bash  apierrorps.sh",
+    "tssv": "npx swagger-typescript-api --no-client --modular -p ../../docs/swagger.yaml -o ./src/psvdata -n myApi.ts",
     "preview": "vite preview"
   },
   "dependencies": {

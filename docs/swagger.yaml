@@ -6,6 +6,40 @@ definitions:
       message:
         type: string
     type: object
+  ov.LoginRequest:
+    properties:
+      captcha:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - captcha
+    - password
+    - username
+    type: object
+  ov.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        type: string
+      token:
+        type: string
+    required:
+    - refresh_token
+    - token
+    type: object
+  ov.Token:
+    properties:
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+      token:
+        type: string
+      token_type:
+        type: string
+    type: object
   ov.User:
     properties:
       email:
@@ -36,6 +70,77 @@ info:
   title: coderx
   version: "1.0"
 paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 登陆
+      parameters:
+      - description: 登陆参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ov.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ov.Token'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ov.Error'
+      summary: 登陆
+      tags:
+      - auth
+  /api/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: 登出
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登出成功
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ov.Error'
+      summary: 登出
+      tags:
+      - auth
+  /api/auth/refresh_token:
+    post:
+      consumes:
+      - application/json
+      description: 刷新token
+      parameters:
+      - description: 刷新token参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ov.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ov.Token'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ov.Error'
+      summary: 刷新token
+      tags:
+      - auth
   /api/users:
     get:
       consumes:

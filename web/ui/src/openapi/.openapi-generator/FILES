@@ -1,7 +1,11 @@
+apis/AuthApi.ts
 apis/DefaultApi.ts
 apis/index.ts
 index.ts
 models/OvError.ts
+models/OvLoginRequest.ts
+models/OvRefreshTokenRequest.ts
+models/OvToken.ts
 models/OvUser.ts
 models/index.ts
 runtime.ts
