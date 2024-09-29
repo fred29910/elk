@@ -15,23 +15,33 @@ interface AuthState {
 // 使用环境变量或默认值
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
-const createApi = (token: string | null) => new AuthApi(
-  new Configuration({ 
-    basePath: API_BASE_URL,
-    accessToken: token || undefined
-  })
-)
+let apiInstance: AuthApi | null = null
+
+const createApi = () => {
+  if (!apiInstance) {
+    apiInstance = new AuthApi(
+      new Configuration({ 
+        basePath: API_BASE_URL,
+        accessToken: async () => {
+          const state = useAuthStore.getState()
+          return state.token || ""
+        }
+      })
+    )
+  }
+  return apiInstance
+}
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       isAuthenticated: false,
       username: null,
       token: null,
       login: async (username: string, password: string) => {
         try {
-          const api = createApi(null)
-          const loginRequestBody: OvLoginRequest = { username, password ,captcha: ''}
+          const api = createApi()
+          const loginRequestBody: OvLoginRequest = { username, password, captcha: '' }
           const result = await api.apiAuthLoginPost({ body: loginRequestBody })
           if (result.token) {
             set({ isAuthenticated: true, username, token: result.token })
@@ -45,7 +55,7 @@ export const useAuthStore = create<AuthState>()(
       },
       logout: async () => {
         try {
-          const api = createApi(get().token)
+          const api = createApi()
           await api.apiAuthLogoutPost()
           set({ isAuthenticated: false, username: null, token: null })
         } catch (error) {
