@@ -12,6 +12,7 @@ import About from './pages/About.tsx'
 import Login from './pages/Login.tsx'
 import theme from './theme';
 import './index.css'
+import Register from './pages/Register.tsx';
 
 // 懒加载 Users 和 Systems 组件
 const Users = lazy(() => import('./pages/Users.tsx'))
@@ -32,6 +33,11 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route path="login" element={<Login />} />
+            <Route path="register" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Register />
+              </Suspense>
+            } />
             <Route element={<Layout />}>
               <Route index element={<Home />} />
               <Route element={<ProtectedRoute />}>

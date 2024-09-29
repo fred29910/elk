@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Link, Grid } from '@mui/material';
+import { Box, TextField, Button, Typography, Link } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+// import { useAuthStore } from '../store/authStore';
 
-export default function Login() {
+export default function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const login = useAuthStore((state) => state.login);
+  const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      await login(username, password);
-      navigate('/');
-    } catch (error) {
-      console.error('登录失败:', error);
+    if (password !== confirmPassword) {
+      alert('密码不匹配');
+      return;
     }
+    // 这里添加注册逻辑
+    console.log('注册:', { username, password });
+    
+    // 注册成功后跳转到登录页
+    navigate('/login');
   };
 
   return (
@@ -34,7 +37,7 @@ export default function Login() {
       }}
     >
       <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-        登录
+        注册
       </Typography>
       <TextField
         label="用户名"
@@ -53,21 +56,21 @@ export default function Login() {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
+      <TextField
+        label="确认密码"
+        type="password"
+        variant="outlined"
+        fullWidth
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        required
+      />
       <Button type="submit" variant="contained" fullWidth>
-        登录
+        注册
       </Button>
-      <Grid container justifyContent="space-between" alignItems="center">
-        <Grid item>
-          <Link component={RouterLink} to="/" variant="body2">
-            返回主页
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link component={RouterLink} to="/register" variant="body2">
-            没有账号？注册
-          </Link>
-        </Grid>
-      </Grid>
+      <Link component={RouterLink} to="/login" variant="body2">
+        已有账号？登录
+      </Link>
     </Box>
   );
 }
