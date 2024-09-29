@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import { AuthApi } from '../openapi/apis/AuthApi'
 import { Configuration } from '../openapi/runtime'
 import { OvLoginRequest } from '../openapi/models/OvLoginRequest'
+import { showToast } from '../utils/toast'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -13,7 +14,7 @@ interface AuthState {
 }
 
 // 使用环境变量或默认值
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081'
 
 let apiInstance: AuthApi | null = null
 
@@ -41,7 +42,7 @@ export const useAuthStore = create<AuthState>()(
       login: async (username: string, password: string) => {
         try {
           const api = createApi()
-          const loginRequestBody: OvLoginRequest = { username, password, captcha: '' }
+          const loginRequestBody: OvLoginRequest = { username, password, captcha: '123456' }
           const result = await api.apiAuthLoginPost({ body: loginRequestBody })
           if (result.token) {
             set({ isAuthenticated: true, username, token: result.token })
@@ -50,6 +51,7 @@ export const useAuthStore = create<AuthState>()(
           }
         } catch (error) {
           console.error('登录错误:', error)
+          showToast('登录失败，请检查您的用户名和密码', 'error')
           throw error
         }
       },
@@ -60,6 +62,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isAuthenticated: false, username: null, token: null })
         } catch (error) {
           console.error('登出错误:', error)
+          showToast('登出失败，请稍后重试', 'error')
           throw error
         }
       },

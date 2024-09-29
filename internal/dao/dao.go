@@ -3,14 +3,17 @@ package dao
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/mysql"
+	"gorm.io/plugin/opentelemetry/tracing"
 
 	// "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
 	"github.com/cham/elk/internal/config"
+	"github.com/cham/elk/internal/db/model"
 )
 
 var db *gorm.DB
@@ -24,6 +27,30 @@ func Init() error {
 	} else {
 		dns := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbConfig.Mysql.User, dbConfig.Mysql.Password, dbConfig.Mysql.Host, dbConfig.Mysql.Port, dbConfig.Mysql.Database)
 		db, err = gorm.Open(mysql.Open(dns), &gorm.Config{})
+	}
+	if err != nil {
+		return err
+	}
+
+	// 添加 OpenTelemetry 插件用于 tracing
+	if err := db.Use(tracing.NewPlugin()); err != nil {
+		return err
+	}
+
+	// 设置连接池
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	appCfg := config.GetAppConfig()
+	if appCfg.Debug {
+		// 自动迁移模型
+		db = db.Debug()
+		db.AutoMigrate(&model.User{}, &model.Schema{}, &model.Code{})
 	}
 	return err
 }

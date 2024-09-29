@@ -8,8 +8,9 @@ import (
 )
 
 type AppConfig struct {
-	Port int    `json:"port" mapstructure:"port"`
-	Host string `json:"host" mapstructure:"host"`
+	Port  int    `json:"port" mapstructure:"port"`
+	Host  string `json:"host" mapstructure:"host"`
+	Debug bool   `json:"debug" mapstructure:"debug"`
 }
 
 type JwtConfig struct {
@@ -39,8 +40,9 @@ type MysqlConfig struct {
 // get config by viper
 func GetAppConfig() *AppConfig {
 	app := &AppConfig{
-		Port: 8081,
-		Host: "localhost",
+		Port:  8081,
+		Host:  "localhost",
+		Debug: false,
 	}
 	viper.Unmarshal(&app)
 
@@ -72,6 +74,16 @@ func GetDbConfig() *DbConfig {
 		},
 	}
 	viper.UnmarshalKey("db", &db)
+
+	// check sqlite path
+	if db.Model == "sqlite" && db.Sqlite.Path == "" {
+		db.Sqlite.Path = filepath.Join(homePath, ".cache", "coderx", psPath, "db.sqlite")
+	}
+	if db.Model == "sqlite" {
+		if _, err := os.Stat(filepath.Dir(db.Sqlite.Path)); os.IsNotExist(err) {
+			os.MkdirAll(filepath.Dir(db.Sqlite.Path), 0755)
+		}
+	}
 
 	return db
 }

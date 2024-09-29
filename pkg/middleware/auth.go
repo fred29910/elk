@@ -11,9 +11,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// AuthMiddleware 验证用户身份
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 这里应该实现您的身份验证逻辑
+		// 路径白名单
+		path := c.FullPath()
+		if path == "/api/auth/login" || path == "/api/auth/register" {
+			c.Next()
+			return
+		}
 		// 例如,检查 JWT token, session 等
 
 		// 示例: 从请求头中获取 token

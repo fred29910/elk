@@ -14,9 +14,11 @@ import (
 	"time"
 
 	"github.com/cham/elk/internal/config"
+	"github.com/cham/elk/internal/dao"
 	"github.com/cham/elk/internal/router"
 	"github.com/cham/elk/pkg/middleware"
 	"github.com/cham/elk/web"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
@@ -42,11 +44,32 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
+		err := dao.Init()
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
 		r := gin.New()
+		// 从配置文件中读取 AllowOrigins
+		allowOrigins := viper.GetStringSlice("allow_origins")
+		if len(allowOrigins) == 0 {
+			allowOrigins = []string{"http://localhost:5173", "http://localhost:8081"} // 默认值
+		}
+
+		// 添加 CORS 中间件
+		corsConfig := cors.DefaultConfig()
+		corsConfig.AllowOrigins = allowOrigins
+		corsConfig.AllowCredentials = true
+		corsConfig.AddAllowHeaders("Authorization")
+		r.Use(cors.New(corsConfig))
+
 		fs := web.BinaryFileSystem("ui/dist")
-		r.Use(middleware.AuthMiddleware())
 		r.Use(static.Serve("/", fs))
+		r.Use(middleware.ErrorHandler())
+		r.Use(middleware.AuthMiddleware())
 		router.InitUserRoutes(r)
+		router.InitAuthRoutes(r)
 		// 使用自定义的文件系统来移除路径前缀
 		// fs := web.NewPrefixFileSystem(web.UiDs, "ui/dist")
 		appConfig := config.GetAppConfig()
