@@ -13,7 +13,7 @@ func List(c *gin.Context, query ov.UserQuery) ([]muser.User, int64, error) {
 }
 
 func Create(c *gin.Context, data ov.User) (*muser.User, error) {
-	return user.Create(c, data)
+	return user.Create(c, &data)
 }
 
 // get user info

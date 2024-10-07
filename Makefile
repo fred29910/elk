@@ -1,5 +1,5 @@
 .PHONY: build gen clean
-build:
+build: gen
 	go build --trimpath -ldflags "-s -w"  -o build/  ./...
 
 gen:

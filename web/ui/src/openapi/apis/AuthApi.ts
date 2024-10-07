@@ -18,7 +18,8 @@ import * as runtime from '../runtime';
 import type {
   GithubComChamElkPkgOvError,
   GithubComChamElkPkgOvLoginRequest,
-  GithubComChamElkPkgOvRefreshTokenRequest,
+  GithubComChamElkPkgOvRegisterReq,
+  GithubComChamElkPkgOvRegisterResp,
   GithubComChamElkPkgOvToken,
 } from '../models/index';
 import {
@@ -26,8 +27,10 @@ import {
     GithubComChamElkPkgOvErrorToJSON,
     GithubComChamElkPkgOvLoginRequestFromJSON,
     GithubComChamElkPkgOvLoginRequestToJSON,
-    GithubComChamElkPkgOvRefreshTokenRequestFromJSON,
-    GithubComChamElkPkgOvRefreshTokenRequestToJSON,
+    GithubComChamElkPkgOvRegisterReqFromJSON,
+    GithubComChamElkPkgOvRegisterReqToJSON,
+    GithubComChamElkPkgOvRegisterRespFromJSON,
+    GithubComChamElkPkgOvRegisterRespToJSON,
     GithubComChamElkPkgOvTokenFromJSON,
     GithubComChamElkPkgOvTokenToJSON,
 } from '../models/index';
@@ -37,7 +40,7 @@ export interface ApiAuthLoginPostRequest {
 }
 
 export interface ApiAuthRefreshTokenPostRequest {
-    body: GithubComChamElkPkgOvRefreshTokenRequest;
+    body: GithubComChamElkPkgOvRegisterReq;
 }
 
 /**
@@ -116,10 +119,10 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * 刷新token
-     * 刷新token
+     * register
+     * register
      */
-    async apiAuthRefreshTokenPostRaw(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GithubComChamElkPkgOvToken>> {
+    async apiAuthRefreshTokenPostRaw(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GithubComChamElkPkgOvRegisterResp>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -138,17 +141,17 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: GithubComChamElkPkgOvRefreshTokenRequestToJSON(requestParameters['body']),
+            body: GithubComChamElkPkgOvRegisterReqToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GithubComChamElkPkgOvTokenFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GithubComChamElkPkgOvRegisterRespFromJSON(jsonValue));
     }
 
     /**
-     * 刷新token
-     * 刷新token
+     * register
+     * register
      */
-    async apiAuthRefreshTokenPost(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GithubComChamElkPkgOvToken> {
+    async apiAuthRefreshTokenPost(requestParameters: ApiAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GithubComChamElkPkgOvRegisterResp> {
         const response = await this.apiAuthRefreshTokenPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

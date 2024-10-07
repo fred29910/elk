@@ -1,6 +1,8 @@
 package user
 
 import (
+	"context"
+
 	"github.com/cham/elk/internal/dao"
 	"github.com/cham/elk/internal/model/user"
 	"github.com/cham/elk/pkg/ov"
@@ -41,18 +43,18 @@ func List(c *gin.Context, query ov.UserQuery) ([]user.User, int64, error) {
 	return users, total, result.Error
 }
 
-func Create(c *gin.Context, data ov.User) (*user.User, error) {
+func Create(ctx context.Context, data *ov.User) (*user.User, error) {
 	user := user.User{
 		Username: data.Username,
 		Email:    data.Email,
 		Password: data.Password,
 		Status:   data.Status,
 	}
-	err := dao.DB(c).Create(&user).Error
+	err := dao.DB(ctx).Create(&user).Error
 	return &user, err
 }
 
-func Update(c *gin.Context, data ov.UpdateUserOV) (*user.User, error) {
+func Update(c context.Context, data ov.UpdateUserOV) (*user.User, error) {
 	updataMap := make(map[string]interface{})
 	if data.Username != nil {
 		updataMap["username"] = data.Username
@@ -79,7 +81,7 @@ func Update(c *gin.Context, data ov.UpdateUserOV) (*user.User, error) {
 	return &updatedUser, nil
 }
 
-func Get(c *gin.Context, qs map[string]any) (*user.User, error) {
+func Get(c context.Context, qs map[string]any) (*user.User, error) {
 	var user user.User
 
 	err := dao.DB(c).Where(qs).First(&user).Error

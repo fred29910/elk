@@ -32,3 +32,18 @@ type PageInfo struct {
 	Code  int    `json:"code,omitempty"`
 	Error string `json:"msg,omitempty"`
 }
+
+// Register 注册
+type RegisterReq struct {
+	Username string `json:"username" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+// RegisterResp 注册响应
+type RegisterResp struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

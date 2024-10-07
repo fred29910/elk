@@ -107,3 +107,28 @@ func Logout(c *gin.Context) {
 
 	auth.Logout(token)
 }
+
+// @Summary register
+// @Description register
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body ov.RegisterReq true "register参数"
+// @Success 200 {object} ov.RegisterResp
+// @Failure 400 {object} ov.Error
+// @Router /api/auth/refresh_token [post]
+func Register(c *gin.Context) {
+	var data ov.RegisterReq
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.Error(errors.VALID_ERROR)
+		return
+	}
+	regsiterInfo, err := auth.CreateUser(c, &data)
+	if err != nil {
+		c.Error(errors.SERVER_ERROR)
+		return
+	}
+
+	c.JSON(http.StatusOK, regsiterInfo)
+}

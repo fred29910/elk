@@ -72,6 +72,30 @@ definitions:
     - refresh_token
     - token
     type: object
+  github_com_cham_elk_pkg_ov.RegisterReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  github_com_cham_elk_pkg_ov.RegisterResp:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   github_com_cham_elk_pkg_ov.Result:
     properties:
       code:
@@ -178,26 +202,26 @@ paths:
     post:
       consumes:
       - application/json
-      description: 刷新token
+      description: register
       parameters:
-      - description: 刷新token参数
+      - description: register参数
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_cham_elk_pkg_ov.RefreshTokenRequest'
+          $ref: '#/definitions/github_com_cham_elk_pkg_ov.RegisterReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_cham_elk_pkg_ov.Token'
+            $ref: '#/definitions/github_com_cham_elk_pkg_ov.RegisterResp'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_cham_elk_pkg_ov.Error'
-      summary: 刷新token
+      summary: register
       tags:
       - auth
   /api/systems:

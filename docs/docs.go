@@ -95,7 +95,7 @@ const docTemplate = `{
         },
         "/api/auth/refresh_token": {
             "post": {
-                "description": "刷新token",
+                "description": "register",
                 "consumes": [
                     "application/json"
                 ],
@@ -105,15 +105,15 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "刷新token",
+                "summary": "register",
                 "parameters": [
                     {
-                        "description": "刷新token参数",
+                        "description": "register参数",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.RefreshTokenRequest"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.RegisterReq"
                         }
                     }
                 ],
@@ -121,7 +121,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.Token"
+                            "$ref": "#/definitions/github_com_cham_elk_pkg_ov.RegisterResp"
                         }
                     },
                     "400": {
@@ -465,6 +465,42 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_cham_elk_pkg_ov.RegisterReq": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_cham_elk_pkg_ov.RegisterResp": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

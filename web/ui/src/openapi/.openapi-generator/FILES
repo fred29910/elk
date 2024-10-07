@@ -10,6 +10,8 @@ models/GithubComChamElkPkgOvError.ts
 models/GithubComChamElkPkgOvLoginRequest.ts
 models/GithubComChamElkPkgOvPageInfo.ts
 models/GithubComChamElkPkgOvRefreshTokenRequest.ts
+models/GithubComChamElkPkgOvRegisterReq.ts
+models/GithubComChamElkPkgOvRegisterResp.ts
 models/GithubComChamElkPkgOvResult.ts
 models/GithubComChamElkPkgOvToken.ts
 models/GithubComChamElkPkgOvUser.ts

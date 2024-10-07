@@ -9,6 +9,8 @@ export * from './GithubComChamElkPkgOvError';
 export * from './GithubComChamElkPkgOvLoginRequest';
 export * from './GithubComChamElkPkgOvPageInfo';
 export * from './GithubComChamElkPkgOvRefreshTokenRequest';
+export * from './GithubComChamElkPkgOvRegisterReq';
+export * from './GithubComChamElkPkgOvRegisterResp';
 export * from './GithubComChamElkPkgOvResult';
 export * from './GithubComChamElkPkgOvToken';
 export * from './GithubComChamElkPkgOvUser';

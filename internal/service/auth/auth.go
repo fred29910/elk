@@ -1,12 +1,16 @@
 package auth
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
 
 	"github.com/cham/elk/internal/config"
 	"github.com/cham/elk/internal/dao/token"
+	userDao "github.com/cham/elk/internal/dao/user"
+
+	"github.com/cham/elk/pkg/ov"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -66,4 +70,23 @@ func Logout(tokenString string) error {
 	token.Delete(fmt.Sprintf("user:%d:token", uid))
 	token.Delete(fmt.Sprintf("user:%d:refresh_token", uid))
 	return nil
+}
+
+func CreateUser(ctx context.Context, req *ov.RegisterReq) (*ov.RegisterResp, error) {
+
+	user := &ov.User{
+		Username: req.Username,
+		Email:    req.Email,
+		Password: req.Password,
+	}
+	data, err := userDao.Create(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	return &ov.RegisterResp{
+		Username: data.Username,
+		Email:    data.Email,
+		Password: data.Password,
+		ID:       data.ID,
+	}, nil
 }
